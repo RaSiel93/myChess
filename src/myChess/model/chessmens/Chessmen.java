@@ -5,13 +5,14 @@ import java.util.List;
 
 import myChess.types.Cell;
 import myChess.types.TypeChessmen;
+import myChess.types.ColorChessmen;
 
 public abstract class Chessmen {
 	protected Cell cell;
-	protected Color color;
+	protected ColorChessmen color;
 	protected int countMove;
 	
-	public Chessmen(Cell cell, Color color) {
+	public Chessmen(Cell cell, ColorChessmen color) {
 		this.cell = cell;
 		this.color = color;
 		this.countMove = 0;
@@ -33,7 +34,7 @@ public abstract class Chessmen {
 		return this.cell;
 	}
 	
-	public Color getColor() {
+	public ColorChessmen getColor() {
 		return color;
 	}
 

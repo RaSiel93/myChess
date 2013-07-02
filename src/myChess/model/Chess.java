@@ -1,11 +1,11 @@
 package myChess.model;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
 import myChess.model.chessmens.*;
 import myChess.types.Cell;
+import myChess.types.ColorChessmen;
 
 public class Chess {
 	private List<Chessmen> chessmens;
@@ -22,27 +22,27 @@ public class Chess {
 
 	public void loadChessmens() {
 		for (int num = 0; num < 8; num++) {
-			chessmens.add(new Pawn(new Cell(num, 6), Color.white));
-			chessmens.add(new Pawn(new Cell(num, 1), Color.black));
+			chessmens.add(new Pawn(new Cell(num, 6), ColorChessmen.white));
+			chessmens.add(new Pawn(new Cell(num, 1), ColorChessmen.black));
 		}
 
-		chessmens.add(new Rook(new Cell(0, 7), Color.white));
-		chessmens.add(new Rook(new Cell(7, 7), Color.white));
-		chessmens.add(new Rook(new Cell(0, 0), Color.black));
-		chessmens.add(new Rook(new Cell(7, 0), Color.black));
-		chessmens.add(new Horse(new Cell(1, 7), Color.white));
-		chessmens.add(new Horse(new Cell(6, 7), Color.white));
-		chessmens.add(new Horse(new Cell(1, 0), Color.black));
-		chessmens.add(new Horse(new Cell(6, 0), Color.black));
-		chessmens.add(new Officer(new Cell(2, 7), Color.white));
-		chessmens.add(new Officer(new Cell(5, 7), Color.white));
-		chessmens.add(new Officer(new Cell(2, 0), Color.black));
-		chessmens.add(new Officer(new Cell(5, 0), Color.black));
-		chessmens.add(new Queen(new Cell(3, 7), Color.white));
-		chessmens.add(new Queen(new Cell(3, 0), Color.black));
+		chessmens.add(new Rook(new Cell(0, 7), ColorChessmen.white));
+		chessmens.add(new Rook(new Cell(7, 7), ColorChessmen.white));
+		chessmens.add(new Rook(new Cell(0, 0), ColorChessmen.black));
+		chessmens.add(new Rook(new Cell(7, 0), ColorChessmen.black));
+		chessmens.add(new Horse(new Cell(1, 7), ColorChessmen.white));
+		chessmens.add(new Horse(new Cell(6, 7), ColorChessmen.white));
+		chessmens.add(new Horse(new Cell(1, 0), ColorChessmen.black));
+		chessmens.add(new Horse(new Cell(6, 0), ColorChessmen.black));
+		chessmens.add(new Officer(new Cell(2, 7), ColorChessmen.white));
+		chessmens.add(new Officer(new Cell(5, 7), ColorChessmen.white));
+		chessmens.add(new Officer(new Cell(2, 0), ColorChessmen.black));
+		chessmens.add(new Officer(new Cell(5, 0), ColorChessmen.black));
+		chessmens.add(new Queen(new Cell(3, 7), ColorChessmen.white));
+		chessmens.add(new Queen(new Cell(3, 0), ColorChessmen.black));
 
-		chessmens.add(this.kingWhite = new King(new Cell(4, 7), Color.white));
-		chessmens.add(this.kingBlack = new King(new Cell(4, 0), Color.black));
+		chessmens.add(this.kingWhite = new King(new Cell(4, 7), ColorChessmen.white));
+		chessmens.add(this.kingBlack = new King(new Cell(4, 0), ColorChessmen.black));
 	}
 
 	public Chessmen getChessmen(Cell cell) {
@@ -85,11 +85,11 @@ public class Chess {
 		return getChessmen(cell) == null;
 	}
 
-	public Chessmen getChessmenDanger(Color color) {
+	public Chessmen getChessmenDanger(ColorChessmen color) {
 		return getChessmenMoveTo(getKing(color).getCell(), switchColor(color));
 	}
 
-	private Chessmen getChessmenMoveTo(Cell cell, Color color) {
+	private Chessmen getChessmenMoveTo(Cell cell, ColorChessmen color) {
 		for (Chessmen chessmen : chessmens) {
 			if (chessmen.getColor() == color) {
 				if (chessmen.checkMove(cell, getChessStatus(),
@@ -101,7 +101,7 @@ public class Chess {
 		return null;
 	}
 
-	public boolean checkKingPath(Color color) {
+	public boolean checkKingPath(ColorChessmen color) {
 		boolean checkPath = false;
 
 		Chessmen king = getKing(color);
@@ -124,9 +124,9 @@ public class Chess {
 		return checkPath;
 	}
 
-	private Chessmen getKing(Color color) {
+	private Chessmen getKing(ColorChessmen color) {
 		Chessmen chessmen;
-		if (color == Color.white) {
+		if (color == ColorChessmen.white) {
 			chessmen = this.kingWhite;
 		} else {
 			chessmen = this.kingBlack;
@@ -149,7 +149,7 @@ public class Chess {
 		return cells;
 	}
 
-	private boolean checkEnemy(Cell cell, Color color) {
+	private boolean checkEnemy(Cell cell, ColorChessmen color) {
 		boolean enemy = false;
 		Chessmen chessmenEnemy = getChessmen(cell);
 		if (chessmenEnemy != null) {
@@ -185,7 +185,7 @@ public class Chess {
 
 	public boolean checkCover(Chessmen chessmen) {
 		boolean cover = false;
-		Color color = switchColor(chessmen.getColor());
+		ColorChessmen color = switchColor(chessmen.getColor());
 		Chessmen king = getKing(color);
 
 		List<Cell> cells = chessmen.getAttackPath(king.getCell());
@@ -205,16 +205,16 @@ public class Chess {
 		return cover;
 	}
 
-	private Color switchColor(Color color) {
-		if (color == Color.white) {
-			color = Color.black;
+	private ColorChessmen switchColor(ColorChessmen color) {
+		if (color == ColorChessmen.white) {
+			color = ColorChessmen.black;
 		} else {
-			color = Color.white;
+			color = ColorChessmen.white;
 		}
 		return color;
 	}
 
-	public boolean checkPad(Color color) {
+	public boolean checkPad(ColorChessmen color) {
 		// TODO Auto-generated method stub
 		return false;
 	}

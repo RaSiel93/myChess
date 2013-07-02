@@ -6,9 +6,10 @@ import java.util.List;
 
 import myChess.types.Cell;
 import myChess.types.TypeChessmen;
+import myChess.types.ColorChessmen;
 
 public class Pawn extends Chessmen {
-	public Pawn(Cell cell, Color color) {
+	public Pawn(Cell cell, ColorChessmen color) {
 		super(cell, color);
 	}
 
@@ -34,7 +35,7 @@ public class Pawn extends Chessmen {
 	private boolean checkPath(int x1, int y1, int x2, int y2,
 			boolean[][] chessboard, boolean enemy) {
 		boolean path = false;
-		if (getColor() == Color.black) {
+		if (getColor() == ColorChessmen.black) {
 			if (x1 == x2 && chessboard[x2][y2]) {
 				if (y1 + 1 == y2) {
 					path = true;
@@ -46,7 +47,7 @@ public class Pawn extends Chessmen {
 			if (y1 + 1 == y2 && (x1 - 1 == x2 || x1 + 1 == x2) && enemy) {
 				path = true;
 			}
-		} else if (getColor() == Color.white) {
+		} else if (getColor() == ColorChessmen.white) {
 			if (x1 == x2 && chessboard[x2][y2]) {
 				if (y1 - 1 == y2 && chessboard[x2][y2]) {
 					path = true;

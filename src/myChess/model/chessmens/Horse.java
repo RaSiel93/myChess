@@ -6,9 +6,10 @@ import java.util.List;
 
 import myChess.types.Cell;
 import myChess.types.TypeChessmen;
+import myChess.types.ColorChessmen;
 
 public class Horse extends Chessmen {
-	public Horse(Cell cell, Color color) {
+	public Horse(Cell cell, ColorChessmen color) {
 		super(cell, color);
 	}
 

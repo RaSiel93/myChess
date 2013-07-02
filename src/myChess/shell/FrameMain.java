@@ -7,12 +7,14 @@ import java.io.IOException;
 
 import javax.swing.JFrame;
 
-import About.DialogAbout;
-import myChess.Main;
+import myChess.Discription;
 import myChess.controller.Controller;
 import myChess.controller.Status;
+import myChess.shell.panels.PanelGame;
+import myChess.shell.panels.PanelMenu;
+import myChess.shell.panels.PanelStatus;
 import myChess.types.StyleChessboard;
-import myChess.shell.panels.*;
+import About.DialogAbout;
 
 public class FrameMain extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -38,7 +40,7 @@ public class FrameMain extends JFrame {
 
 		addWindowListener(new Exit());
 		pack();
-		setTitle("myChess " + Main.version);
+		setTitle("myChess " + Discription.version);
 		setResizable(false);
 		setVisible(true);
 		setLocationRelativeTo(null);

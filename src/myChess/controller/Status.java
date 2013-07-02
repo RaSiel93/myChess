@@ -5,10 +5,11 @@ import java.awt.Color;
 import myChess.model.chessmens.Chessmen;
 import myChess.controller.history.HistoryType;
 import myChess.types.Cell;
+import myChess.types.ColorChessmen;
 
 public class Status {
 	private boolean game;
-	private Color whoWalks;
+	private ColorChessmen whoWalks;
 
 	private String commentGame;
 	private String commentHistory;
@@ -25,7 +26,7 @@ public class Status {
 
 	public void reset() {
 		this.game = false;
-		this.whoWalks = Color.white;
+		this.whoWalks = ColorChessmen.white;
 		this.commentGame = "-";
 		this.commentHistory = "Пустая история";
 		this.history = new History();
@@ -48,15 +49,15 @@ public class Status {
 		return this.game;
 	}
 
-	public Color whoWalk() {
+	public ColorChessmen whoWalk() {
 		return this.whoWalks;
 	}
 
-	private Color whoNoWalk() {
-		if (this.whoWalks == Color.white) {
-			return Color.black;
+	private ColorChessmen whoNoWalk() {
+		if (this.whoWalks == ColorChessmen.white) {
+			return ColorChessmen.black;
 		}
-		return Color.white;
+		return ColorChessmen.white;
 	}
 
 	public void switchWalk() {
@@ -89,7 +90,7 @@ public class Status {
 
 	public String getWhoWalk() {
 		String whoWalk;
-		if (whoWalk() == Color.white) {
+		if (whoWalk() == ColorChessmen.white) {
 			whoWalk = "Ходят белые";
 		} else {
 			whoWalk = "Ходят черные";

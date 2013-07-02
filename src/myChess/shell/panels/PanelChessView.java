@@ -17,6 +17,7 @@ import myChess.controller.Controller;
 import myChess.shell.FrameMain;
 import myChess.types.Cell;
 import myChess.types.StyleChessboard;
+import myChess.types.ColorChessmen;
 
 public class PanelChessView extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -164,7 +165,7 @@ public class PanelChessView extends JPanel {
 	}
 
 	private Image drawPawn(Chessmen chessmen) {
-		if (chessmen.getColor() == Color.black) {
+		if (chessmen.getColor() == ColorChessmen.black) {
 			return Toolkit.getDefaultToolkit().getImage(
 					"images/chessmens/pb.png");
 		}
@@ -172,7 +173,7 @@ public class PanelChessView extends JPanel {
 	}
 
 	private Image drawRook(Chessmen chessmen) {
-		if (chessmen.getColor() == Color.black) {
+		if (chessmen.getColor() == ColorChessmen.black) {
 			return Toolkit.getDefaultToolkit().getImage(
 					"images/chessmens/lb.png");
 		}
@@ -180,7 +181,7 @@ public class PanelChessView extends JPanel {
 	}
 
 	private Image drawHorse(Chessmen chessmen) {
-		if (chessmen.getColor() == Color.black) {
+		if (chessmen.getColor() == ColorChessmen.black) {
 			return Toolkit.getDefaultToolkit().getImage(
 					"images/chessmens/hb.png");
 		}
@@ -188,7 +189,7 @@ public class PanelChessView extends JPanel {
 	}
 
 	private Image drawOfficer(Chessmen chessmen) {
-		if (chessmen.getColor() == Color.black) {
+		if (chessmen.getColor() == ColorChessmen.black) {
 			return Toolkit.getDefaultToolkit().getImage(
 					"images/chessmens/ob.png");
 		}
@@ -196,7 +197,7 @@ public class PanelChessView extends JPanel {
 	}
 
 	private Image drawQueen(Chessmen chessmen) {
-		if (chessmen.getColor() == Color.black) {
+		if (chessmen.getColor() == ColorChessmen.black) {
 			return Toolkit.getDefaultToolkit().getImage(
 					"images/chessmens/qb.png");
 		}
@@ -204,7 +205,7 @@ public class PanelChessView extends JPanel {
 	}
 
 	private Image drawKing(Chessmen chessmen) {
-		if (chessmen.getColor() == Color.black) {
+		if (chessmen.getColor() == ColorChessmen.black) {
 			return Toolkit.getDefaultToolkit().getImage(
 					"images/chessmens/kb.png");
 		}

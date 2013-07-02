@@ -3,12 +3,13 @@ package myChess.controller;
 import java.awt.Color;
 import java.util.List;
 
+import myChess.controller.history.*;
 import myChess.model.chessmens.Chessmen;
-import myChess.types.Cell;
-import myChess.types.TypeChessmen;
 import myChess.model.Chess;
 import myChess.shell.FrameMain;
-import myChess.controller.history.*;
+import myChess.types.Cell;
+import myChess.types.TypeChessmen;
+import myChess.types.ColorChessmen;
 
 public class Controller {
 	private Chess chess;
@@ -105,7 +106,7 @@ public class Controller {
 				.getY() == 0));
 	}
 
-	private boolean checkGameOver(Color color) {
+	private boolean checkGameOver(ColorChessmen color) {
 		boolean gameOver = false;
 		if (checkShah(color)) {
 			if (checkMat(color)) {
@@ -117,7 +118,7 @@ public class Controller {
 		return gameOver;
 	}
 
-	private boolean checkPad(Color color) {
+	private boolean checkPad(ColorChessmen color) {
 		boolean checkpad = false;
 		if (chess.checkPad(color)) {
 			status.setCommentGame("Пад");
@@ -126,7 +127,7 @@ public class Controller {
 		return checkpad;
 	}
 
-	private boolean checkMat(Color color) {
+	private boolean checkMat(ColorChessmen color) {
 		boolean checkmat = false;
 		if (!chess.checkKingPath(color)
 				&& !chess.checkKill(chess.getChessmenDanger(color))
@@ -137,7 +138,7 @@ public class Controller {
 		return checkmat;
 	}
 
-	private boolean checkShah(Color color) {
+	private boolean checkShah(ColorChessmen color) {
 		Chessmen chessmenDanger = chess.getChessmenDanger(color);
 		if (chessmenDanger != null) {
 			status.setChessmenDanger(chessmenDanger);
@@ -214,7 +215,7 @@ public class Controller {
 		status.setChessmenActive(chess.getChessmen(status.getCellActive()));
 	}
 
-	public Color getStatus() {
+	public ColorChessmen getStatus() {
 		return status.whoWalk();
 	}
 
@@ -280,7 +281,7 @@ public class Controller {
 
 	private Chessmen getRookInCastling(Cell cell) {
 		Chessmen rook = null;
-		if (status.whoWalk() == Color.white) {
+		if (status.whoWalk() == ColorChessmen.white) {
 			if (cell.getX() < 4) {
 				rook = chess.getChessmen(new Cell(0, 7));
 			} else {
@@ -298,7 +299,7 @@ public class Controller {
 
 	private Cell getCellRookCastling(Cell cell) {
 		Cell cellRook = null;
-		if (status.whoWalk() == Color.white) {
+		if (status.whoWalk() == ColorChessmen.white) {
 			if (cell.getX() < 4) {
 				cellRook = new Cell(3, 7);
 			} else {
