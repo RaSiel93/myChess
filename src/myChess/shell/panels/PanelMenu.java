@@ -8,12 +8,14 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 
 import javax.swing.ButtonGroup;
+import javax.swing.JCheckBox;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButton;
 import javax.swing.KeyStroke;
 
+import myChess.Discription;
 import myChess.controller.Controller;
 import myChess.shell.FrameMain;
 import myChess.types.StyleChessboard;
@@ -67,9 +69,10 @@ public class PanelMenu extends JMenuBar {
 				StyleChessboard.Brown));
 		styleBrown.setSelected(true);
 
-		JMenuItem backlight = new JMenuItem("Подсветка");
+		JCheckBox backlight = new JCheckBox("Подсветка");
+		backlight.setSelected(true);
 		backlight.addActionListener(new Backlight());
-		backlight.setAccelerator(KeyStroke.getKeyStroke('B', CTRL_DOWN_MASK));
+		backlight.setMnemonic(KeyEvent.VK_L);
 
 		ButtonGroup group = new ButtonGroup();
 		group.add(styleClassic);
@@ -85,9 +88,14 @@ public class PanelMenu extends JMenuBar {
 		// ----------------------------------
 
 		JMenu aboutMenu = new JMenu("О программе");
-		JMenuItem about = new JMenuItem("Об авторе");
-		about.addActionListener(new About());
-		aboutMenu.add(about);
+		JMenuItem aboutVersions = new JMenuItem("О версиях (сохр. на комп.)");
+		aboutVersions.addActionListener(new aboutDiscription());
+
+		JMenuItem aboutAuthor = new JMenuItem("Об авторе");
+		aboutAuthor.addActionListener(new About());
+
+		aboutMenu.add(aboutVersions);
+		aboutMenu.add(aboutAuthor);
 
 		add(aboutMenu);
 	}
@@ -145,6 +153,17 @@ public class PanelMenu extends JMenuBar {
 		public void actionPerformed(ActionEvent e) {
 			try {
 				frameMain.showDialogAbout();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+	}
+
+	private class aboutDiscription implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			try {
+				Discription.write("discription.txt");
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}

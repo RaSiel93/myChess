@@ -9,8 +9,6 @@ import myChess.shell.FrameMain;
 
 public class MyChess {
 	public static void main(String[] args) throws IOException {
-		Discription.write("discription.txt");
-		
 		Chess chess = new Chess();
 		Status status = new Status();
 

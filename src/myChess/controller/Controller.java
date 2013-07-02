@@ -64,7 +64,7 @@ public class Controller {
 				} else {
 					move(chessmen, cell);
 					if (checkGameOver(status.whoWalk())) {
-						// status.stop();
+						status.stop();
 					}
 				}
 			} else {
@@ -183,7 +183,6 @@ public class Controller {
 	}
 
 	public void update() {
-		// status.update();
 		frameMain.update();
 		frameMain.repaint();
 	}

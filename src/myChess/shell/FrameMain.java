@@ -67,7 +67,12 @@ public class FrameMain extends JFrame {
 
 	public void showDialogAbout() throws IOException {
 		DialogAbout dialogAbout = new DialogAbout(this, "2", "игра - Шахматы",
-				"29.06.2013 16:50:30");
+				"03.07.2013 00:59:49");
 		dialogAbout.setVisible(true);
+	}
+	
+	public void showMessageDialog(String header, String message) {
+		DialogMessage dialogMessage = new DialogMessage(this, header, message);
+		dialogMessage.setVisible(true);
 	}
 }

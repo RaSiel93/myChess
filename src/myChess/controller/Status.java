@@ -40,7 +40,7 @@ public class Status {
 
 	public void stop() {
 		this.game = false;
-		setCommentGame("Конец игры");
+		//setCommentGame("Конец игры");
 	}
 
 	public boolean isGame() {

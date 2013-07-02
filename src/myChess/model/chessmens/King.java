@@ -49,10 +49,10 @@ public class King extends Chessmen {
 		int x1 = this.getX();
 		int y1 = this.getY();
 
-		paths.add(new Cell(x1, y1));
 		paths.add(new Cell(x1, y1 + 1));
 		paths.add(new Cell(x1, y1 - 1));
 		paths.add(new Cell(x1 + 1, y1));
+		paths.add(new Cell(x1 - 1, y1));
 		paths.add(new Cell(x1 + 1, y1 + 1));
 		paths.add(new Cell(x1 + 1, y1 - 1));
 		paths.add(new Cell(x1 - 1, y1 + 1));

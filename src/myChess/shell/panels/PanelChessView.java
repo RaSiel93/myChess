@@ -138,7 +138,7 @@ public class PanelChessView extends JPanel {
 	private void printDangerPaths(Graphics2D g2) {
 		Cell cell = controller.getDangerCell();
 		if (cell != null) {
-			drawCell(g2, cell, new Color(200, 80, 80));
+			drawCell(g2, cell, new Color(200, 30, 30));
 		}
 	}
 
