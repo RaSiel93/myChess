@@ -9,6 +9,7 @@ import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Rectangle2D.Double;
+import java.util.List;
 
 import javax.swing.JPanel;
 
@@ -24,13 +25,20 @@ public class PanelChessView extends JPanel {
 	private Controller controller;
 	private Color colorChessboard1;
 	private Color colorChessboard2;
+	private boolean backlight;
 
 	public PanelChessView(Controller controller) {
 		this.controller = controller;
+		this.backlight = true;
 		switchStyleChessboard(StyleChessboard.Brown);
 		setPreferredSize(new Dimension(600, 600));
 	}
 
+	public void switchBackLight(){
+		this.backlight = !this.backlight;
+		updateUI();
+	}
+	
 	public void switchStyleChessboard(StyleChessboard color) {
 		switch (color) {
 		case Classic:
@@ -44,7 +52,7 @@ public class PanelChessView extends JPanel {
 		}
 		updateUI();
 	}
-	
+
 	private void switchClassicStyle() {
 		this.colorChessboard1 = new Color(0, 0, 0);
 		this.colorChessboard2 = new Color(255, 255, 255);
@@ -55,15 +63,15 @@ public class PanelChessView extends JPanel {
 		this.colorChessboard2 = new Color(220, 200, 130);
 	}
 
-//	private void switchGreenStyle() {
-//		this.colorChessboard1 = new Color(30, 80, 30);
-//		this.colorChessboard2 = new Color(120, 150, 120);
-//	}
-//
-//	private void switchSeaStyle2() {
-//		this.colorChessboard1 = new Color(90, 50, 20);
-//		this.colorChessboard2 = new Color(220, 200, 130);
-//	}
+	// private void switchGreenStyle() {
+	// this.colorChessboard1 = new Color(30, 80, 30);
+	// this.colorChessboard2 = new Color(120, 150, 120);
+	// }
+	//
+	// private void switchSeaStyle2() {
+	// this.colorChessboard1 = new Color(90, 50, 20);
+	// this.colorChessboard2 = new Color(220, 200, 130);
+	// }
 
 	@Override
 	protected void paintComponent(Graphics g) {
@@ -71,8 +79,12 @@ public class PanelChessView extends JPanel {
 		Graphics2D g2 = (Graphics2D) g;
 
 		printChessboard(g2);
+		if (this.backlight) {
+			printAvailablePaths(g2);
+			printDangerChessmen(g2);
+			printDangerPaths(g2);
+		}
 		printActiveCell(g2);
-		printDangerChessmen(g2);
 		printActiveChessmen(g2);
 		printChessmens(g2);
 	}
@@ -107,6 +119,26 @@ public class PanelChessView extends JPanel {
 				}
 				g2.fill(getCellSquare(new Cell(x, y)));
 			}
+		}
+	}
+
+	private void printAvailablePaths(Graphics2D g2) {
+		List<Cell> cells = controller.getAvailablePathsAtActiveChessmen();
+		if (cells != null) {
+			for (Cell cell : cells) {
+				if (controller.getChessmen(cell) == null) {
+					drawCell(g2, cell, new Color(80, 80, 200));
+				} else {
+					drawCell(g2, cell, new Color(200, 80, 80));
+				}
+			}
+		}
+	}
+
+	private void printDangerPaths(Graphics2D g2) {
+		Cell cell = controller.getDangerCell();
+		if (cell != null) {
+			drawCell(g2, cell, new Color(200, 80, 80));
 		}
 	}
 
@@ -167,48 +199,48 @@ public class PanelChessView extends JPanel {
 	private Image drawPawn(Chessmen chessmen) {
 		if (chessmen.getColor() == ColorChessmen.black) {
 			return Toolkit.getDefaultToolkit().getImage(
-					"images/chessmens/pb.png");
+					PanelChessView.class.getResource("chessmens/PB.png"));
 		}
-		return Toolkit.getDefaultToolkit().getImage("images/chessmens/pw.png");
+		return Toolkit.getDefaultToolkit().getImage(PanelChessView.class.getResource("chessmens/PW.png"));
 	}
 
 	private Image drawRook(Chessmen chessmen) {
 		if (chessmen.getColor() == ColorChessmen.black) {
 			return Toolkit.getDefaultToolkit().getImage(
-					"images/chessmens/lb.png");
+					PanelChessView.class.getResource("chessmens/RB.png"));
 		}
-		return Toolkit.getDefaultToolkit().getImage("images/chessmens/lw.png");
+		return Toolkit.getDefaultToolkit().getImage(PanelChessView.class.getResource("chessmens/RW.png"));
 	}
 
 	private Image drawHorse(Chessmen chessmen) {
 		if (chessmen.getColor() == ColorChessmen.black) {
 			return Toolkit.getDefaultToolkit().getImage(
-					"images/chessmens/hb.png");
+					PanelChessView.class.getResource("chessmens/HB.png"));
 		}
-		return Toolkit.getDefaultToolkit().getImage("images/chessmens/hw.png");
+		return Toolkit.getDefaultToolkit().getImage(PanelChessView.class.getResource("chessmens/HW.png"));
 	}
 
 	private Image drawOfficer(Chessmen chessmen) {
 		if (chessmen.getColor() == ColorChessmen.black) {
 			return Toolkit.getDefaultToolkit().getImage(
-					"images/chessmens/ob.png");
+					PanelChessView.class.getResource("chessmens/OB.png"));
 		}
-		return Toolkit.getDefaultToolkit().getImage("images/chessmens/ow.png");
+		return Toolkit.getDefaultToolkit().getImage(PanelChessView.class.getResource("chessmens/OW.png"));
 	}
 
 	private Image drawQueen(Chessmen chessmen) {
 		if (chessmen.getColor() == ColorChessmen.black) {
 			return Toolkit.getDefaultToolkit().getImage(
-					"images/chessmens/qb.png");
+					PanelChessView.class.getResource("chessmens/QB.png"));
 		}
-		return Toolkit.getDefaultToolkit().getImage("images/chessmens/qw.png");
+		return Toolkit.getDefaultToolkit().getImage(PanelChessView.class.getResource("chessmens/QW.png"));
 	}
 
 	private Image drawKing(Chessmen chessmen) {
 		if (chessmen.getColor() == ColorChessmen.black) {
 			return Toolkit.getDefaultToolkit().getImage(
-					"images/chessmens/kb.png");
+					PanelChessView.class.getResource("chessmens/KB.png"));
 		}
-		return Toolkit.getDefaultToolkit().getImage("images/chessmens/kw.png");
+		return Toolkit.getDefaultToolkit().getImage(PanelChessView.class.getResource("chessmens/KW.png"));
 	}
 }

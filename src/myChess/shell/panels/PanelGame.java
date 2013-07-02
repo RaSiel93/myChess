@@ -38,4 +38,8 @@ public class PanelGame extends JPanel {
 	public void switchStyleChessboard(StyleChessboard color) {
 		this.panelChessView.switchStyleChessboard(color);
 	}
+
+	public void switchBacklight() {
+		this.panelChessView.switchBackLight();
+	}
 }

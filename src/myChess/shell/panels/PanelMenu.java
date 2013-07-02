@@ -32,7 +32,7 @@ public class PanelMenu extends JMenuBar {
 		JMenuItem newGame = new JMenuItem("Новая игра");
 		newGame.addActionListener(new NewGame());
 		newGame.setAccelerator(KeyStroke.getKeyStroke('N', CTRL_DOWN_MASK));
-		
+
 		JMenuItem undo = new JMenuItem("Отменить ход");
 		undo.addActionListener(new Undo());
 		undo.setAccelerator(KeyStroke.getKeyStroke('Z', CTRL_DOWN_MASK));
@@ -58,12 +58,18 @@ public class PanelMenu extends JMenuBar {
 
 		JRadioButton styleClassic = new JRadioButton("Классическая");
 		styleClassic.setMnemonic(KeyEvent.VK_C);
-		styleClassic.addActionListener(new SwitchStyleChessboard(StyleChessboard.Classic));
+		styleClassic.addActionListener(new SwitchStyleChessboard(
+				StyleChessboard.Classic));
 
 		JRadioButton styleBrown = new JRadioButton("Коричневая");
 		styleBrown.setMnemonic(KeyEvent.VK_B);
-		styleBrown.addActionListener(new SwitchStyleChessboard(StyleChessboard.Brown));
+		styleBrown.addActionListener(new SwitchStyleChessboard(
+				StyleChessboard.Brown));
 		styleBrown.setSelected(true);
+
+		JMenuItem backlight = new JMenuItem("Подсветка");
+		backlight.addActionListener(new Backlight());
+		backlight.setAccelerator(KeyStroke.getKeyStroke('B', CTRL_DOWN_MASK));
 
 		ButtonGroup group = new ButtonGroup();
 		group.add(styleClassic);
@@ -72,6 +78,8 @@ public class PanelMenu extends JMenuBar {
 		option.add(colors);
 		colors.add(styleClassic);
 		colors.add(styleBrown);
+
+		option.add(backlight);
 
 		add(option);
 		// ----------------------------------
@@ -83,14 +91,14 @@ public class PanelMenu extends JMenuBar {
 
 		add(aboutMenu);
 	}
-	
+
 	private class NewGame implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			controller.newGame();
 		}
 	}
-	
+
 	private class Undo implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -122,6 +130,13 @@ public class PanelMenu extends JMenuBar {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			frameMain.switchStyleChessboard(this.color);
+		}
+	}
+
+	private class Backlight implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			frameMain.switchBacklight();
 		}
 	}
 

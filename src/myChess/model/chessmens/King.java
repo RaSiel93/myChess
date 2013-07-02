@@ -1,6 +1,6 @@
 package myChess.model.chessmens;
 
-import java.awt.Color;
+import java.util.ArrayList;
 import java.util.List;
 
 import myChess.types.Cell;
@@ -23,13 +23,12 @@ public class King extends Chessmen {
 	}
 
 	@Override
-	public boolean checkMove(Cell cell, boolean[][] chessboard, boolean enemy) {
+	public boolean checkMove(Cell cell, ColorChessmen[][] chessboard) {
 		int x1 = this.getX();
 		int y1 = this.getY();
 		int x2 = cell.getX();
 		int y2 = cell.getY();
-		return checkPath(x1, y1, x2, y2)
-				&& checkBlock(x2, y2, chessboard, enemy);
+		return checkPath(x1, y1, x2, y2) && !checkBlock(x2, y2, chessboard);
 	}
 
 	boolean checkPath(int x1, int y1, int x2, int y2) {
@@ -40,9 +39,25 @@ public class King extends Chessmen {
 		return false;
 	}
 
-	private boolean checkBlock(int x2, int y2, boolean[][] chessboard,
-			boolean enemy) {
-		chessboard = preprocessing(x2, y2, chessboard, enemy);
-		return chessboard[x2][y2];
+	private boolean checkBlock(int x2, int y2, ColorChessmen[][] chessboard) {
+		return chessboard[x2][y2] == getColor();
+	}
+
+	@Override
+	public List<Cell> getPaths() {
+		List<Cell> paths = new ArrayList<Cell>();
+		int x1 = this.getX();
+		int y1 = this.getY();
+
+		paths.add(new Cell(x1, y1));
+		paths.add(new Cell(x1, y1 + 1));
+		paths.add(new Cell(x1, y1 - 1));
+		paths.add(new Cell(x1 + 1, y1));
+		paths.add(new Cell(x1 + 1, y1 + 1));
+		paths.add(new Cell(x1 + 1, y1 - 1));
+		paths.add(new Cell(x1 - 1, y1 + 1));
+		paths.add(new Cell(x1 - 1, y1 - 1));
+
+		return validateCells(paths);
 	}
 }

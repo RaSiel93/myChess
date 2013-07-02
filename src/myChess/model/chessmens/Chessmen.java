@@ -1,6 +1,6 @@
 package myChess.model.chessmens;
 
-import java.awt.Color;
+import java.util.ArrayList;
 import java.util.List;
 
 import myChess.types.Cell;
@@ -51,16 +51,36 @@ public abstract class Chessmen {
 	public abstract TypeChessmen isWho();
 
 	abstract public List<Cell> getAttackPath(Cell cell);
+
+	abstract public List<Cell> getPaths();
+		
+	abstract public boolean checkMove(Cell cell, ColorChessmen[][] checkboard);
 	
-	//abstract public List<Cell> getPath();
-	
-	abstract public boolean checkMove(Cell cell, boolean[][] checkboard, boolean enemy);
-	
-	protected boolean[][] preprocessing(int x2, int y2, boolean[][] chessboard,
-			boolean enemy) {
-		if (enemy == true) {
-			chessboard[x2][y2] = enemy;
+	protected List<Cell> validateCells(List<Cell> cells) {
+		List<Cell> validateCells = new ArrayList<Cell>();
+		for (Cell cell : cells) {
+			if (cell.getX() < 0 || cell.getY() < 0 || cell.getX() > 7
+					|| cell.getY() > 7) {
+				validateCells.add(cell);
+			}
 		}
-		return chessboard;
+		for (Cell cell : validateCells) {
+			cells.remove(cell);
+		}
+		return cells;
+	}
+
+	public List<Cell> getAvailablePaths(ColorChessmen[][] chessboard) {
+		List<Cell> availablePaths = getPaths();
+		List<Cell> badCells = new ArrayList<Cell>();
+		for (Cell cell : availablePaths) {
+			if (!checkMove(cell, chessboard)) {
+				badCells.add(cell);
+			}
+		}
+		for (Cell cell : badCells) {
+			availablePaths.remove(cell);
+		}
+		return availablePaths;
 	}
 }

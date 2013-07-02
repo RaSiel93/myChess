@@ -1,6 +1,5 @@
 package myChess.controller;
 
-import java.awt.Color;
 import java.util.List;
 
 import myChess.controller.history.*;
@@ -247,8 +246,7 @@ public class Controller {
 		boolean move = false;
 		if (checkCastling(chessmen, cell)) {
 			move = true;
-		} else if (chessmen.checkMove(cell, chess.getChessStatus(),
-				checkEnemyChessmen())) {
+		} else if (chessmen.checkMove(cell, chess.getChessStatus())) {
 			move = true;
 		}
 		return move;
@@ -272,7 +270,7 @@ public class Controller {
 		Cell cellRook = getCellRookCastling(cell);
 		if (rook != null) {
 			if (rook.getCountMove() == 0
-					&& rook.checkMove(cellRook, chess.getChessStatus(), false)) {
+					&& rook.checkMove(cellRook, chess.getChessStatus())) {
 				castling = true;
 			}
 		}
@@ -333,5 +331,26 @@ public class Controller {
 			checkGameOver(status.whoWalk());
 			update();
 		}
+	}
+
+	public List<Cell> getAvailablePathsAtActiveChessmen() {
+		List<Cell> availablePaths = null;
+		Chessmen chessmen = status.getChessmenActive();
+		if (chessmen != null) {
+			availablePaths = chessmen.getAvailablePaths(chess.getChessStatus());
+		}
+		return availablePaths;
+	}
+
+	public Cell getDangerCell() {
+		Cell cell = null;
+		if (status.getCellDanger() != null) {
+			cell = chess.getKing(status.whoWalk()).getCell();
+		}
+		return cell;
+	}
+
+	public Chessmen getChessmen(Cell cell) {
+		return chess.getChessmen(cell);
 	}
 }

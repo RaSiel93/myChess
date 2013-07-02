@@ -1,7 +1,5 @@
 package myChess.controller;
 
-import java.awt.Color;
-
 import myChess.model.chessmens.Chessmen;
 import myChess.controller.history.HistoryType;
 import myChess.types.Cell;

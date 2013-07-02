@@ -7,7 +7,7 @@ import myChess.controller.Status;
 import myChess.model.Chess;
 import myChess.shell.FrameMain;
 
-public class Main {
+public class MyChess {
 	public static void main(String[] args) throws IOException {
 		Discription.write("discription.txt");
 		

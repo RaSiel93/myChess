@@ -1,6 +1,5 @@
 package myChess.model.chessmens;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,13 +78,13 @@ public class Queen extends Chessmen {
 	}
 	
 	@Override
-	public boolean checkMove(Cell cell, boolean[][] chessboard, boolean enemy) {
+	public boolean checkMove(Cell cell, ColorChessmen[][] chessboard) {
 		int x1 = this.getX();
 		int y1 = this.getY();
 		int x2 = cell.getX();
 		int y2 = cell.getY();
 		return checkPath(x1, y1, x2, y2)
-				&& checkBlock(x1, y1, x2, y2, chessboard, enemy);
+				&& !checkBlock(x1, y1, x2, y2, chessboard);
 	}
 
 	private boolean checkPath(int x1, int y1, int x2, int y2) {
@@ -105,22 +104,26 @@ public class Queen extends Chessmen {
 	}
 
 	private boolean checkBlock(int x1, int y1, int x2, int y2,
-			boolean[][] chessboard, boolean enemy) {
-		chessboard = preprocessing(x2, y2, chessboard, enemy);
-		boolean block = true;
+			ColorChessmen[][] chessboard) {
+		boolean block = false;
+		if(chessboard[x2][y2] == getColor()){
+			block = true;
+		}
+		ColorChessmen color = chessboard[x2][y2];
+		chessboard[x2][y2] = null;
 		
 		if ((x2 - x1) == (y2 - y1)) {
 			int correct = 0;
 			if (y1 < y2) {
 				for (int pos = y1 + 1; pos < y2; pos++) {
-					if (!chessboard[x1 + ++correct][pos]) {
-						block = false;
+					if (chessboard[x1 + ++correct][pos] != null) {
+						block = true;
 					}
 				}
 			} else {
 				for (int pos = y1 - 1; pos > y2; pos--) {
-					if (!chessboard[x1 + --correct][pos]) {
-						block = false;
+					if (chessboard[x1 + --correct][pos] != null) {
+						block = true;
 					}
 				}
 			}
@@ -128,46 +131,65 @@ public class Queen extends Chessmen {
 			int correct = 0;
 			if (x1 < x2) {
 				for (int pos = x1 + 1; pos < x2; pos++) {
-					if (!chessboard[pos][y1 + --correct]) {
-						block = false;
+					if (chessboard[pos][y1 + --correct]  != null) {
+						block = true;
 					}
 				}
 			} else {
 				for (int pos = x1 - 1; pos > x2; pos--) {
-					if (!chessboard[pos][y1 + ++correct]) {
-						block = false;
+					if (chessboard[pos][y1 + ++correct] != null) {
+						block = true;
 					}
 				}
 			}
 		} else if (x1 == x2) {
 			if (y1 < y2) {
 				for (int pos = y1 + 1; pos < y2; pos++) {
-					if (!chessboard[x2][pos]) {
-						block = false;
+					if (chessboard[x2][pos] != null) {
+						block = true;
 					}
 				}
 			} else {
 				for (int pos = y1 - 1; pos > y2; pos--) {
-					if (!chessboard[x2][pos]) {
-						block = false;
+					if (chessboard[x2][pos] != null) {
+						block = true;
 					}
 				}
 			}
 		} else if (y1 == y2) {
 			if (x1 < x2) {
 				for (int pos = x1 + 1; pos < x2; pos++) {
-					if (!chessboard[pos][y2]) {
-						block = false;
+					if (chessboard[pos][y2] != null) {
+						block = true;
 					}
 				}
 			} else {
 				for (int pos = x1 - 1; pos > x2; pos--) {
-					if (!chessboard[pos][y2]) {
-						block = false;
+					if (chessboard[pos][y2] != null) {
+						block = true;
 					}
 				}
 			}
 		}
+		chessboard[x2][y2] = color;
 		return block;
+	}
+
+	@Override
+	public List<Cell> getPaths() {
+		List<Cell> paths = new ArrayList<Cell>();
+		int x1 = this.getX();
+		int y1 = this.getY();
+
+		for (int pos = 0; pos <= 7; pos++) {
+			paths.add(new Cell(x1, pos));
+			paths.add(new Cell(pos, y1));
+			paths.add(new Cell(x1 + pos, y1 + pos));
+			paths.add(new Cell(x1 + pos, y1 - pos));
+			paths.add(new Cell(x1 - pos, y1 + pos));
+			paths.add(new Cell(x1 - pos, y1 - pos));
+		}
+
+		return validateCells(paths);
 	}
 }

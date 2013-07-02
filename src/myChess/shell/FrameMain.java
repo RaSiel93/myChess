@@ -7,6 +7,8 @@ import java.io.IOException;
 
 import javax.swing.JFrame;
 
+import about.DialogAbout;
+
 import myChess.Discription;
 import myChess.controller.Controller;
 import myChess.controller.Status;
@@ -14,7 +16,6 @@ import myChess.shell.panels.PanelGame;
 import myChess.shell.panels.PanelMenu;
 import myChess.shell.panels.PanelStatus;
 import myChess.types.StyleChessboard;
-import About.DialogAbout;
 
 public class FrameMain extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -60,9 +61,13 @@ public class FrameMain extends JFrame {
 		this.panelGame.switchStyleChessboard(color);
 	}
 
+	public void switchBacklight() {
+		this.panelGame.switchBacklight();
+	}
+
 	public void showDialogAbout() throws IOException {
-		DialogAbout dlgAbout = new DialogAbout(this, "2", "игра - Шахматы",
+		DialogAbout dialogAbout = new DialogAbout(this, "2", "игра - Шахматы",
 				"29.06.2013 16:50:30");
-		dlgAbout.setVisible(true);
+		dialogAbout.setVisible(true);
 	}
 }

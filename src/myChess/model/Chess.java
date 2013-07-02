@@ -41,8 +41,10 @@ public class Chess {
 		chessmens.add(new Queen(new Cell(3, 7), ColorChessmen.white));
 		chessmens.add(new Queen(new Cell(3, 0), ColorChessmen.black));
 
-		chessmens.add(this.kingWhite = new King(new Cell(4, 7), ColorChessmen.white));
-		chessmens.add(this.kingBlack = new King(new Cell(4, 0), ColorChessmen.black));
+		chessmens.add(this.kingWhite = new King(new Cell(4, 7),
+				ColorChessmen.white));
+		chessmens.add(this.kingBlack = new King(new Cell(4, 0),
+				ColorChessmen.black));
 	}
 
 	public Chessmen getChessmen(Cell cell) {
@@ -67,16 +69,10 @@ public class Chess {
 		chessmens.remove(chessmen);
 	}
 
-	public boolean[][] getChessStatus() {// переделать: возвращать массив цветов
-											// фигур
-		boolean status[][] = new boolean[8][8];
-		for (int x = 0; x < 8; x++) {
-			for (int y = 0; y < 8; y++) {
-				status[x][y] = true;
-			}
-		}
+	public ColorChessmen[][] getChessStatus() {
+		ColorChessmen status[][] = new ColorChessmen[8][8];
 		for (Chessmen chessmen : getChessmens()) {
-			status[chessmen.getX()][chessmen.getY()] = false;
+			status[chessmen.getX()][chessmen.getY()] = chessmen.getColor();
 		}
 		return status;
 	}
@@ -92,8 +88,7 @@ public class Chess {
 	private Chessmen getChessmenMoveTo(Cell cell, ColorChessmen color) {
 		for (Chessmen chessmen : chessmens) {
 			if (chessmen.getColor() == color) {
-				if (chessmen.checkMove(cell, getChessStatus(),
-						checkEnemy(cell, color))) {
+				if (chessmen.checkMove(cell, getChessStatus())) {
 					return chessmen;
 				}
 			}
@@ -109,8 +104,7 @@ public class Chess {
 
 		for (Cell cell : cells) {
 			if (validateCell(cell)) {
-				if (king.checkMove(cell, getChessStatus(),
-						checkEnemy(cell, color))) {
+				if (king.checkMove(cell, getChessStatus())) {
 					Cell cellOriginal = king.getCell();
 					king.move(cell);
 					if (getChessmenDanger(color) == null) {
@@ -124,7 +118,7 @@ public class Chess {
 		return checkPath;
 	}
 
-	private Chessmen getKing(ColorChessmen color) {
+	public Chessmen getKing(ColorChessmen color) {
 		Chessmen chessmen;
 		if (color == ColorChessmen.white) {
 			chessmen = this.kingWhite;
@@ -149,18 +143,18 @@ public class Chess {
 		return cells;
 	}
 
-	private boolean checkEnemy(Cell cell, ColorChessmen color) {
-		boolean enemy = false;
-		Chessmen chessmenEnemy = getChessmen(cell);
-		if (chessmenEnemy != null) {
-			if (chessmenEnemy.getColor() != color) {
-				enemy = true;
-			}
-		}
-		return enemy;
-	}
+//	private boolean checkEnemy(Cell cell, ColorChessmen color) {
+//		boolean enemy = false;
+//		Chessmen chessmenEnemy = getChessmen(cell);
+//		if (chessmenEnemy != null) {
+//			if (chessmenEnemy.getColor() != color) {
+//				enemy = true;
+//			}
+//		}
+//		return enemy;
+//	}
 
-	private boolean validateCell(Cell cell) {//удалить после
+	private boolean validateCell(Cell cell) {// удалить после
 		return (cell.getX() >= 0 && cell.getX() <= 7 && cell.getY() >= 0 && cell
 				.getY() <= 7);
 	}
@@ -215,7 +209,9 @@ public class Chess {
 	}
 
 	public boolean checkPad(ColorChessmen color) {
-		// TODO Auto-generated method stub
+		/*Chessmen chessmen = getChessmen(new Cell(1,0));
+		List<Cell> cells1 = chessmen.getPaths();
+		List<Cell> cells2 = chessmen.getAvailablePaths(getChessStatus());*/
 		return false;
 	}
 }
