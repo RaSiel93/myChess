@@ -5,7 +5,7 @@ import myChess.types.Cell;
 import myChess.model.Chess;
 import myChess.model.chessmens.Queen;
 
-public class HistoryPawnEdge extends History {
+public class HistoryPawnEdge extends HistoryType {
 	private Chess chess;
 	private Cell cellBegin;
 	private Cell cellEnd;
@@ -21,17 +21,17 @@ public class HistoryPawnEdge extends History {
 		this.comment = "Пешка превратилась";
 	}
 
-	public String getHistory() {
+	public String getCommentHistory() {
 		String result = "" + chessmen.isWho() + ": ";
-		result += History.coord[7 - cellBegin.getY()] + (cellBegin.getX() + 1);
+		result += HistoryType.coord[7 - cellBegin.getY()] + (cellBegin.getX() + 1);
 		result += "->";
-		result += History.coord[7 - cellEnd.getY()] + (cellEnd.getX() + 1);
+		result += HistoryType.coord[7 - cellEnd.getY()] + (cellEnd.getX() + 1);
 		return result;
 	}
 
 	@Override
 	public void undo() {
-		chessmen.reMove(cellBegin);
+		chessmen.unmove(cellBegin);
 		chess.removeChessmen(queen);
 		chess.addChessmen(chessmen);
 	}

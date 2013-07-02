@@ -37,7 +37,7 @@ public abstract class Chessmen {
 		return color;
 	}
 
-	public void reMove(Cell cell){
+	public void unmove(Cell cell){
 		this.cell = cell;
 		this.countMove--;
 	}

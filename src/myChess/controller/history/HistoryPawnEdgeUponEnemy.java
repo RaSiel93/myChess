@@ -5,7 +5,7 @@ import myChess.types.Cell;
 import myChess.model.Chess;
 import myChess.model.chessmens.Queen;
 
-public class HistoryPawnEdgeUponEnemy extends History {
+public class HistoryPawnEdgeUponEnemy extends HistoryType {
 	private Chess chess;
 	private Cell cellBegin;
 	private Cell cellEnd;
@@ -23,11 +23,11 @@ public class HistoryPawnEdgeUponEnemy extends History {
 		this.comment = "Пешка превратилась";
 	}
 
-	public String getHistory() {
+	public String getCommentHistory() {
 		String result = "" + chessmen.isWho() + ": ";
-		result += History.coord[7 - cellBegin.getY()] + (cellBegin.getX() + 1);
+		result += HistoryType.coord[7 - cellBegin.getY()] + (cellBegin.getX() + 1);
 		result += "->";
-		result += History.coord[7 - cellEnd.getY()] + (cellEnd.getX() + 1);
+		result += HistoryType.coord[7 - cellEnd.getY()] + (cellEnd.getX() + 1);
 		return result;
 	}
 
@@ -35,7 +35,7 @@ public class HistoryPawnEdgeUponEnemy extends History {
 	public void undo() {
 		chess.removeChessmen(queen);
 		chess.addChessmen(chessmen);
-		chessmen.reMove(cellBegin);
+		chessmen.unmove(cellBegin);
 		chess.addChessmen(enemy);
 	}
 

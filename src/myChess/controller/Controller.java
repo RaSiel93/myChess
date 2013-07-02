@@ -35,16 +35,17 @@ public class Controller {
 	}
 
 	public void start() {
+		chess.reset();
+		chess.loadChessmens();
+		status.reset();
 		status.start();
 	}
 
 	public void stop() {
 		status.stop();
 	}
-	
-	public void newGame(){
-		chess.reset();
-		status.reset();
+
+	public void newGame() {
 		start();
 		update();
 	}
@@ -55,33 +56,36 @@ public class Controller {
 
 		if (checkFriendChessmen(cell)) {
 			setChessmenActive();
-			status.setComment("Ходите");
+			status.setCommentGame("Ходите");
 		} else if (chessmen != null) {
-			if (checkMove(chessmen, cell) && !checkAfterShah(chessmen, cell)) {
-				move(chessmen, cell);
-				if(checkGameOver(status.whoNoWalk())){
-					//status.stop();
+			if (checkMove(chessmen, cell)) {
+				if (checkAfterShah(chessmen, cell)) {
+					status.setCommentGame("Ход под шах");
+				} else {
+					move(chessmen, cell);
+					if (checkGameOver(status.whoWalk())) {
+						// status.stop();
+					}
 				}
 			} else {
-				status.setComment("Недопустимый ход");
+				status.setCommentGame("Недопустимый ход");
 			}
 		} else {
-			status.setComment("Выберите фигуру");
+			status.setCommentGame("Выберите фигуру");
 		}
 		update();
 	}
- 
-	public void move(Chessmen chessmen, Cell cell) {
-		History history = null;
-		if (checkCastling(chessmen, cell)) {
-			Chessmen rook = getRookInCastling(cell);
-			Cell cellRook = getCellRookCastling(cell);
 
-			history = new HistoryCastling(chessmen, cell, rook, cellRook);
+	public void move(Chessmen chessmen, Cell cell) {
+		HistoryType history = null;
+		if (checkCastling(chessmen, cell)) {
+			history = new HistoryCastling(chessmen, cell,
+					getRookInCastling(cell), getCellRookCastling(cell));
 		} else if (checkPawnEdge(chessmen, cell)) {
 			Chessmen enemy = chess.getChessmen(cell);
 			if (enemy != null) {
-				history = new HistoryPawnEdgeUponEnemy(chess, chessmen, enemy, cell);
+				history = new HistoryPawnEdgeUponEnemy(chess, chessmen, enemy,
+						cell);
 			} else {
 				history = new HistoryPawnEdge(chess, chessmen, cell);
 			}
@@ -93,13 +97,7 @@ public class Controller {
 				history = new HistoryMove(chessmen, cell);
 			}
 		}
-
-		status.addHistory(history);
-		status.setComment(history.getComment());
-		history.redo();
-
-		status.setChessmenActive(null);
-		status.setChessmenDanger(null);
+		status.move(history);
 	}
 
 	private boolean checkPawnEdge(Chessmen chessmen, Cell cell) {
@@ -107,39 +105,22 @@ public class Controller {
 				.getY() == 0));
 	}
 
-	public void undoHistory() {
-		if (status.undoHistory()) {
-			status.setChessmenDanger(null);
-			checkGameOver(status.whoNoWalk());
-			update();
-		}
-	}
-
-	public void redoHistory() {
-		if (status.redoHistory()) {
-			status.setChessmenDanger(null);
-			checkGameOver(status.whoNoWalk());
-			update();
-		}
-	}
-
-
 	private boolean checkGameOver(Color color) {
 		boolean gameOver = false;
-		if(checkShah(color)){
-			if(checkMat(color)){
+		if (checkShah(color)) {
+			if (checkMat(color)) {
 				gameOver = true;
 			}
-		} else if(checkPad(color)){
+		} else if (checkPad(color)) {
 			gameOver = true;
 		}
 		return gameOver;
 	}
-	
+
 	private boolean checkPad(Color color) {
 		boolean checkpad = false;
-		if(chess.checkPad(color)){
-			status.setComment("Пад");
+		if (chess.checkPad(color)) {
+			status.setCommentGame("Пад");
 			checkpad = true;
 		}
 		return checkpad;
@@ -147,8 +128,10 @@ public class Controller {
 
 	private boolean checkMat(Color color) {
 		boolean checkmat = false;
-		if(!chess.checkKingPath(color)&& !chess.checkKill(chess.getChessmenDanger(color)) && !chess.checkCover(chess.getChessmenDanger(color))){
-			status.setComment("Шах и Мат");
+		if (!chess.checkKingPath(color)
+				&& !chess.checkKill(chess.getChessmenDanger(color))
+				&& !chess.checkCover(chess.getChessmenDanger(color))) {
+			status.setCommentGame("Шах и Мат");
 			checkmat = true;
 		}
 		return checkmat;
@@ -158,7 +141,7 @@ public class Controller {
 		Chessmen chessmenDanger = chess.getChessmenDanger(color);
 		if (chessmenDanger != null) {
 			status.setChessmenDanger(chessmenDanger);
-			status.setComment("Шах");
+			status.setCommentGame("Шах");
 			return true;
 		}
 		return false;
@@ -182,14 +165,14 @@ public class Controller {
 
 		Chessmen chessmenDanger = chess.getChessmenDanger(status.whoWalk());
 
-		chessmen.reMove(originalCell);
+		chessmen.unmove(originalCell);
 		if (enemy != null) {
 			chess.addChessmen(enemy);
 		}
 
 		if (chessmenDanger != null) {
 			status.setChessmenDanger(chessmenDanger);
-			status.setComment("Недопустимый ход");
+			status.setCommentGame("Недопустимый ход");
 			shah = true;
 		}
 		return shah;
@@ -200,7 +183,7 @@ public class Controller {
 	}
 
 	public void update() {
-		status.update();
+		// status.update();
 		frameMain.update();
 		frameMain.repaint();
 	}
@@ -333,5 +316,21 @@ public class Controller {
 
 	public void setChessmenDanger(Chessmen chessmen) {
 		status.setChessmenDanger(chessmen);
+	}
+
+	public void undoHistory() {
+		if (status.undoHistory()) {
+			status.switchWalk();
+			checkGameOver(status.whoWalk());
+			update();
+		}
+	}
+
+	public void redoHistory() {
+		if (status.redoHistory()) {
+			status.switchWalk();
+			checkGameOver(status.whoWalk());
+			update();
+		}
 	}
 }

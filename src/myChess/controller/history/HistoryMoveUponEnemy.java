@@ -4,7 +4,7 @@ import myChess.model.chessmens.Chessmen;
 import myChess.types.Cell;
 import myChess.model.Chess;
 
-public class HistoryMoveUponEnemy extends History {
+public class HistoryMoveUponEnemy extends HistoryType {
 	private Chess chess;
 	private Cell cellBegin;
 	private Cell cellEnd;
@@ -21,17 +21,17 @@ public class HistoryMoveUponEnemy extends History {
 		this.comment = "—бита фигура";
 	}
 
-	public String getHistory() {
+	public String getCommentHistory() {
 		String result = "" + chessmen.isWho() + ": ";
-		result += History.coord[7 - cellBegin.getY()] + (cellBegin.getX() + 1);
+		result += HistoryType.coord[7 - cellBegin.getY()] + (cellBegin.getX() + 1);
 		result += "->";
-		result += History.coord[7 - cellEnd.getY()] + (cellEnd.getX() + 1);
+		result += HistoryType.coord[7 - cellEnd.getY()] + (cellEnd.getX() + 1);
 		return result;
 	}
 
 	@Override
 	public void undo() {
-		chessmen.reMove(cellBegin);
+		chessmen.unmove(cellBegin);
 		chess.addChessmen(enemy);
 	}
 

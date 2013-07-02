@@ -8,7 +8,7 @@ import javax.swing.JPanel;
 import myChess.controller.Controller;
 import myChess.shell.listeners.ListenerClick;
 import myChess.shell.listeners.ListenerMoveCursor;
-import myChess.types.StyleColor;
+import myChess.types.StyleChessboard;
 
 public class PanelGame extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -35,7 +35,7 @@ public class PanelGame extends JPanel {
 		add(panel2);
 	}
 
-	public void switchColor(StyleColor color) {
-		this.panelChessView.switchColor(color);
+	public void switchStyleChessboard(StyleChessboard color) {
+		this.panelChessView.switchStyleChessboard(color);
 	}
 }

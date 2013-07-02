@@ -1,6 +1,6 @@
 package myChess.types;
 
-public enum StyleColor {
+public enum StyleChessboard {
 	Classic,
 	Brown,
 	Green,

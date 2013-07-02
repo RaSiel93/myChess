@@ -1,4 +1,4 @@
-package myChess.shell;
+package myChess.shell.panels;
 
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 
@@ -15,14 +15,15 @@ import javax.swing.JRadioButton;
 import javax.swing.KeyStroke;
 
 import myChess.controller.Controller;
-import myChess.types.StyleColor;
+import myChess.shell.FrameMain;
+import myChess.types.StyleChessboard;
 
-public class Menu extends JMenuBar {
+public class PanelMenu extends JMenuBar {
 	private static final long serialVersionUID = 1L;
 	private FrameMain frameMain;
 	private Controller controller;
 
-	Menu(FrameMain frameMain, Controller controller) {
+	public PanelMenu(FrameMain frameMain, Controller controller) {
 		this.frameMain = frameMain;
 		this.controller = controller;
 
@@ -57,11 +58,11 @@ public class Menu extends JMenuBar {
 
 		JRadioButton styleClassic = new JRadioButton("Классическая");
 		styleClassic.setMnemonic(KeyEvent.VK_C);
-		styleClassic.addActionListener(new SwitchColor(StyleColor.Classic));
+		styleClassic.addActionListener(new SwitchStyleChessboard(StyleChessboard.Classic));
 
 		JRadioButton styleBrown = new JRadioButton("Коричневая");
 		styleBrown.setMnemonic(KeyEvent.VK_B);
-		styleBrown.addActionListener(new SwitchColor(StyleColor.Brown));
+		styleBrown.addActionListener(new SwitchStyleChessboard(StyleChessboard.Brown));
 		styleBrown.setSelected(true);
 
 		ButtonGroup group = new ButtonGroup();
@@ -111,16 +112,16 @@ public class Menu extends JMenuBar {
 		}
 	}
 
-	private class SwitchColor implements ActionListener {
-		private StyleColor color;
+	private class SwitchStyleChessboard implements ActionListener {
+		private StyleChessboard color;
 
-		SwitchColor(StyleColor color) {
+		SwitchStyleChessboard(StyleChessboard color) {
 			this.color = color;
 		}
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			frameMain.switchColor(this.color);
+			frameMain.switchStyleChessboard(this.color);
 		}
 	}
 

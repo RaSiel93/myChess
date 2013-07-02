@@ -16,7 +16,7 @@ import myChess.model.chessmens.Chessmen;
 import myChess.controller.Controller;
 import myChess.shell.FrameMain;
 import myChess.types.Cell;
-import myChess.types.StyleColor;
+import myChess.types.StyleChessboard;
 
 public class PanelChessView extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -26,10 +26,24 @@ public class PanelChessView extends JPanel {
 
 	public PanelChessView(Controller controller) {
 		this.controller = controller;
-		switchBrownStyle();
+		switchStyleChessboard(StyleChessboard.Brown);
 		setPreferredSize(new Dimension(600, 600));
 	}
 
+	public void switchStyleChessboard(StyleChessboard color) {
+		switch (color) {
+		case Classic:
+			switchClassicStyle();
+			break;
+		case Brown:
+			switchBrownStyle();
+			break;
+		default:
+			break;
+		}
+		updateUI();
+	}
+	
 	private void switchClassicStyle() {
 		this.colorChessboard1 = new Color(0, 0, 0);
 		this.colorChessboard2 = new Color(255, 255, 255);
@@ -54,7 +68,6 @@ public class PanelChessView extends JPanel {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
-		setBackground(Color.orange);
 
 		printChessboard(g2);
 		printActiveCell(g2);
@@ -118,7 +131,6 @@ public class PanelChessView extends JPanel {
 	}
 
 	private void printChessmens(Graphics2D g2) {
-		//Graphics2D g2d = (Graphics2D) g2;
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -129,7 +141,7 @@ public class PanelChessView extends JPanel {
 				image = drawPawn(chessmen);
 				break;
 			case Rook:
-				image = drawLadya(chessmen);
+				image = drawRook(chessmen);
 				break;
 			case Horse:
 				image = drawHorse(chessmen);
@@ -148,7 +160,6 @@ public class PanelChessView extends JPanel {
 			g2.drawImage(image, chessmen.getX() * FrameMain.sizeCell,
 					chessmen.getY() * FrameMain.sizeCell, FrameMain.sizeCell,
 					FrameMain.sizeCell, this);
-
 		}
 	}
 
@@ -160,7 +171,7 @@ public class PanelChessView extends JPanel {
 		return Toolkit.getDefaultToolkit().getImage("images/chessmens/pw.png");
 	}
 
-	private Image drawLadya(Chessmen chessmen) {
+	private Image drawRook(Chessmen chessmen) {
 		if (chessmen.getColor() == Color.black) {
 			return Toolkit.getDefaultToolkit().getImage(
 					"images/chessmens/lb.png");
@@ -198,19 +209,5 @@ public class PanelChessView extends JPanel {
 					"images/chessmens/kb.png");
 		}
 		return Toolkit.getDefaultToolkit().getImage("images/chessmens/kw.png");
-	}
-
-	public void switchColor(StyleColor color) {
-		switch (color) {
-		case Classic:
-			switchClassicStyle();
-			break;
-		case Brown:
-			switchBrownStyle();
-			break;
-		default:
-			break;
-		}
-		updateUI();
 	}
 }

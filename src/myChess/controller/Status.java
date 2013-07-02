@@ -2,56 +2,46 @@ package myChess.controller;
 
 import java.awt.Color;
 
-import java.util.ArrayList;
-import java.util.List;
 import myChess.model.chessmens.Chessmen;
-import myChess.controller.history.History;
+import myChess.controller.history.HistoryType;
 import myChess.types.Cell;
 
 public class Status {
-	private Cell cellActive;
-	private Chessmen chessmenDanger;
-	private Chessmen chessmenActive;
-
-	private int positionHistory;
-	private List<History> listHistory;
-
 	private boolean game;
 	private Color whoWalks;
-	private String comment;
+
+	private String commentGame;
+	private String commentHistory;
+
+	private History history;
+
+	private Cell cellActive;
+	private Chessmen chessmenActive;
+	private Chessmen chessmenDanger;
 
 	public Status() {
-		this.whoWalks = null;
-		this.cellActive = null;
-		this.chessmenDanger = null;
-		this.chessmenActive = null;
-		this.listHistory = new ArrayList<History>();
-		this.positionHistory = -1;
-		this.game = false;
-		this.comment = "-";
+		reset();
 	}
-
 
 	public void reset() {
-		this.whoWalks = null;
+		this.game = false;
+		this.whoWalks = Color.white;
+		this.commentGame = "-";
+		this.commentHistory = "Пустая история";
+		this.history = new History();
 		this.cellActive = null;
 		this.chessmenDanger = null;
 		this.chessmenActive = null;
-		this.listHistory.clear();
-		this.positionHistory = -1;
-		this.game = false;
-		this.comment = "-";
 	}
-	
+
 	public void start() {
 		this.game = true;
-		update();
-		setComment("Начало игры");
+		setCommentGame("Начало игры");
 	}
 
 	public void stop() {
 		this.game = false;
-		//setComment("Конец игры");
+		setCommentGame("Конец игры");
 	}
 
 	public boolean isGame() {
@@ -62,28 +52,15 @@ public class Status {
 		return this.whoWalks;
 	}
 
-	public Color whoNoWalk() {
+	private Color whoNoWalk() {
 		if (this.whoWalks == Color.white) {
 			return Color.black;
 		}
 		return Color.white;
 	}
 
-	public void update() {
-		if (this.positionHistory % 2 == 0) {
-			this.whoWalks = Color.black;
-		} else {
-			this.whoWalks = Color.white;
-		}
-	}
-	
-	public void updateComment(){
-		History history = getCurrentHistory();
-		if (history != null) {
-			setComment(history.getComment());
-		} else if (checkBeginPositionHistory()) {
-			setComment("Начало игры");
-		}
+	public void switchWalk() {
+		this.whoWalks = whoNoWalk();
 	}
 
 	public Cell getCellActive() {
@@ -110,82 +87,75 @@ public class Status {
 		this.chessmenActive = chessmen;
 	}
 
-	public void addHistory(History history) {
-		removeOldHistory();
-		this.listHistory.add(history);
-		this.positionHistory++;
-	}
-
-	void removeOldHistory() {
-		while (this.positionHistory != listHistory.size() - 1) {
-			this.listHistory.remove(listHistory.size() - 1);
+	public String getWhoWalk() {
+		String whoWalk;
+		if (whoWalk() == Color.white) {
+			whoWalk = "Ходят белые";
+		} else {
+			whoWalk = "Ходят черные";
 		}
+		return whoWalk;
 	}
 
-	public History getCurrentHistory() {
-		if (checkBeginPositionHistory() || checkEndPositionHistory()) {
-			return null;
-		}
-		return this.listHistory.get(positionHistory);
+	public void setCommentGame(String string) {
+		this.commentGame = string;
 	}
 
-	public boolean checkBeginPositionHistory() {
-		return this.positionHistory == -1;
+	public String getCommentGame() {
+		return this.commentGame;
 	}
 
-	public boolean checkEndPositionHistory() {
-		return this.positionHistory == listHistory.size();
+	public void updateCommentGame() {
+		setCommentGame(this.history.getCommentGame());
 	}
 
-	public void nextHistory() {
-		this.positionHistory++;
+	public void setCommentHistory(String string) {
+		this.commentHistory = string;
 	}
 
-	public void prevHistory() {
-		this.positionHistory--;
+	public String getCommentHistory() {
+		return this.commentHistory;
 	}
 
-	public void setComment(String string) {
-		this.comment = string;
+	public void updateCommentHistory() {
+		setCommentHistory(this.history.getCommentHistory());
 	}
 
-	public String getComment() {
-		return this.comment;
+	public void addHistory(HistoryType history) {
+		this.history.addHistory(history);
 	}
 
-	public String getHistory() {
-		History history = getCurrentHistory();
-		if (history != null) {
-			return history.getHistory();
-		}
-		return "Пустая история";
+	void update() {
+		setChessmenActive(null);
+		setChessmenDanger(null);
+		updateCommentGame();
+		updateCommentHistory();
 	}
-
+	
 	public boolean undoHistory() {
 		boolean undo = false;
-		History history = getCurrentHistory();
-		if (history != null) {
-			history.undo();
+		if (this.history.undo()) {
+			update();
 			undo = true;
-			prevHistory();
-			setChessmenActive(null);
-			updateComment();
 		}
 		return undo;
 	}
 
 	public boolean redoHistory() {
 		boolean redo = false;
-		nextHistory();
-		History history = getCurrentHistory();
-		if (history != null) {
-			history.redo();
+		if (this.history.redo()) {
+			update();
 			redo = true;
-			setChessmenActive(null);
-			updateComment();
-		} else {
-			prevHistory();
 		}
 		return redo;
+	}
+
+	public void move(HistoryType history) {
+		history.redo();
+		switchWalk();
+		addHistory(history);
+		update();
+		setChessmenActive(null);
+		setChessmenDanger(null);
 	}
 }

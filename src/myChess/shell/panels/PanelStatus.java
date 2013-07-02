@@ -17,7 +17,7 @@ public class PanelStatus extends JPanel {
 
 	public PanelStatus(Status status) {
 		this.status = status;
-		
+
 		setPreferredSize(new Dimension(0, 24));
 		setBackground(Color.lightGray);
 
@@ -30,17 +30,8 @@ public class PanelStatus extends JPanel {
 	}
 
 	public void update() {
-		this.labelHistory.setText(status.getHistory());
-	
-		this.labelComment.setText("  |  " + this.status.getComment() + "  |  ");
-		
-		if(status.whoWalk() == Color.white){
-			this.labelWhoWalk.setText("Ходят белые");
-		} else {
-			this.labelWhoWalk.setText("Ходят черные");
-		}
-	}
-
-	public void setLabel(String string) {
+		this.labelHistory.setText(this.status.getCommentHistory());
+		this.labelComment.setText("  |  " + this.status.getCommentGame() + "  |  ");
+		this.labelWhoWalk.setText(this.status.getWhoWalk());
 	}
 }

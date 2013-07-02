@@ -3,7 +3,7 @@ package myChess.controller.history;
 import myChess.model.chessmens.Chessmen;
 import myChess.types.Cell;
 
-public class HistoryCastling extends History {
+public class HistoryCastling extends HistoryType {
 	private Cell cellBeginKing;
 	private Cell cellEndKing;
 	private Cell cellBeginRook;
@@ -22,26 +22,26 @@ public class HistoryCastling extends History {
 		this.comment = "Рокировка";
 	}
 
-	public String getHistory() {
+	public String getCommentHistory() {
 		String result = "King: ";
-		result += History.coord[7 - cellBeginKing.getY()]
+		result += HistoryType.coord[7 - cellBeginKing.getY()]
 				+ (cellBeginKing.getX() + 1);
 		result += "->";
-		result += History.coord[7 - cellEndKing.getY()]
+		result += HistoryType.coord[7 - cellEndKing.getY()]
 				+ (cellEndKing.getX() + 1);
 		result += "; Rook: ";
-		result += History.coord[7 - cellBeginRook.getY()]
+		result += HistoryType.coord[7 - cellBeginRook.getY()]
 				+ (cellBeginRook.getX() + 1);
 		result += "->";
-		result += History.coord[7 - cellEndRook.getY()]
+		result += HistoryType.coord[7 - cellEndRook.getY()]
 				+ (cellEndRook.getX() + 1);
 		return result;
 	}
 
 	@Override
 	public void undo() {
-		king.reMove(cellBeginKing);
-		rook.reMove(cellBeginRook);
+		king.unmove(cellBeginKing);
+		rook.unmove(cellBeginRook);
 	}
 
 	@Override

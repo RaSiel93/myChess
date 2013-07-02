@@ -1,29 +1,22 @@
 package myChess;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import myChess.controller.Controller;
 import myChess.controller.Status;
 import myChess.model.Chess;
 import myChess.shell.FrameMain;
 
 public class Main {
+	public static String version = "0.8.3";
 	public static void main(String[] args) {
-		Controller controller = new Controller();
  		Chess chess = new Chess();
 		Status status = new Status();
 
+		Controller controller = new Controller();
 		controller.setModel(chess);
 		controller.setStatus(status);
 		
 		FrameMain frameMain = new FrameMain(controller, status);
 		
 		controller.setFrame(frameMain);
-		
-		frameMain.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
-				System.exit(0);
-			}
-		});
 	}
 }
