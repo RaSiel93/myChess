@@ -11,7 +11,7 @@ import about.DialogAbout;
 
 import myChess.Discription;
 import myChess.controller.Controller;
-import myChess.controller.Status;
+import myChess.model.status.Status;
 import myChess.shell.panels.PanelGame;
 import myChess.shell.panels.PanelMenu;
 import myChess.shell.panels.PanelStatus;
@@ -21,18 +21,19 @@ public class FrameMain extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	public static int sizeCell = 75;
+	private static boolean reversChess = false;
 
 	private PanelGame panelGame;
 	private PanelStatus panelStatus;
 	private PanelMenu panelMenu;
 	private Controller controller;
 
-	public FrameMain(Controller controller, Status status) {
+	public FrameMain(Controller controller) {
 		this.controller = controller;
 
 		panelMenu = new PanelMenu(this, this.controller);
 		panelGame = new PanelGame(controller);
-		panelStatus = new PanelStatus(status);
+		panelStatus = new PanelStatus();
 
 		setLayout(new BorderLayout());
 		add(panelMenu, BorderLayout.NORTH);
@@ -53,7 +54,7 @@ public class FrameMain extends JFrame {
 		}
 	}
 
-	public void update() {
+	public void updateStatus() {
 		panelStatus.update();
 	}
 
@@ -65,14 +66,27 @@ public class FrameMain extends JFrame {
 		this.panelGame.switchBacklight();
 	}
 
+	public void reversChess() {
+		FrameMain.reversChess = !FrameMain.reversChess;
+		repaint();
+	}
+
 	public void showDialogAbout() throws IOException {
 		DialogAbout dialogAbout = new DialogAbout(this, "2", "игра - Шахматы",
 				"03.07.2013 00:59:49");
 		dialogAbout.setVisible(true);
 	}
-	
+
 	public void showMessageDialog(String header, String message) {
 		DialogMessage dialogMessage = new DialogMessage(this, header, message);
 		dialogMessage.setVisible(true);
+	}
+
+	public static int getCoord(int coord) {
+		return FrameMain.reversChess ? (7 - coord) : coord;
+	}
+
+	public void setStatus(Status status) {
+		panelStatus.setStatus(status);
 	}
 }

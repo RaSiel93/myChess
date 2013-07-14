@@ -8,8 +8,9 @@ import myChess.types.TypeChessmen;
 import myChess.types.ColorChessmen;
 
 public class Queen extends Chessmen {
-	public Queen(Cell cell, ColorChessmen color) {
-		super(cell, color);
+	private static final long serialVersionUID = 1L;
+	public Queen(Cell cell, ColorChessmen color, int countMove) {
+		super(cell, color, countMove);
 	}
 
 	@Override

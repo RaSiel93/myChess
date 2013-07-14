@@ -6,7 +6,7 @@ import java.awt.Dimension;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import myChess.controller.Status;
+import myChess.model.status.Status;
 
 public class PanelStatus extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -15,8 +15,8 @@ public class PanelStatus extends JPanel {
 	private JLabel labelHistory;
 	private JLabel labelWhoWalk;
 
-	public PanelStatus(Status status) {
-		this.status = status;
+	public PanelStatus() {
+		this.status = null;
 
 		setPreferredSize(new Dimension(0, 24));
 		setBackground(Color.lightGray);
@@ -30,8 +30,15 @@ public class PanelStatus extends JPanel {
 	}
 
 	public void update() {
-		this.labelHistory.setText(this.status.getCommentHistory());
-		this.labelComment.setText("  |  " + this.status.getCommentGame() + "  |  ");
-		this.labelWhoWalk.setText(this.status.getWhoWalk());
+		if (this.status != null) {
+			this.labelHistory.setText(this.status.getCommentHistory());
+			this.labelComment.setText("  |  " + this.status.getCommentGame()
+					+ "  |  ");
+			this.labelWhoWalk.setText(this.status.getWhoWalk());
+		}
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
 	}
 }

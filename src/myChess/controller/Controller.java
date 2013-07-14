@@ -1,355 +1,261 @@
 package myChess.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
-import myChess.controller.history.*;
+import javax.swing.JFileChooser;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.xml.sax.SAXException;
+
 import myChess.model.chessmens.Chessmen;
+import myChess.model.chessmens.Chessmens;
+import myChess.model.history.*;
+import myChess.model.status.Status;
 import myChess.model.Chess;
 import myChess.shell.FrameMain;
 import myChess.types.Cell;
-import myChess.types.TypeChessmen;
 import myChess.types.ColorChessmen;
 
 public class Controller {
-	private Chess chess;
 	private FrameMain frameMain;
-	private Status status;
+	private Chess chess;
 
-	public Controller() {
+	private Server server;
+	private Client client;
+
+	public Controller(Chess chess) {
+		this.chess = chess;
+		this.chess.start();
+		server = new Server(this);
+		client = new Client();
 	}
 
 	public void setFrame(FrameMain frameMain) {
 		this.frameMain = frameMain;
+		this.frameMain.setStatus(this.chess.getStatus());
 	}
 
-	public void setModel(Chess chess) {
-		this.chess = chess;
-	}
-
-	public void setStatus(Status status) {
-		this.status = status;
-	}
-
-	public boolean isGame() {
-		return this.status.isGame();
-	}
-
-	public void start() {
-		chess.reset();
-		chess.loadChessmens();
-		status.reset();
-		status.start();
-	}
-
-	public void stop() {
-		status.stop();
+	public boolean isModeRead() {
+		return chess.isModeRead();
 	}
 
 	public void newGame() {
-		start();
-		update();
+		this.chess.load(new Chessmens(null), new Status(), new History());
+		this.chess.start();
+		this.frameMain.setStatus(this.chess.getStatus());
+		updateStatus();
+		frameMain.repaint();
 	}
 
 	public void action() {
-		Chessmen chessmen = status.getChessmenActive();
-		Cell cell = status.getCellActive();
-
-		if (checkFriendChessmen(cell)) {
-			setChessmenActive();
-			status.setCommentGame("Ходите");
-		} else if (chessmen != null) {
-			if (checkMove(chessmen, cell)) {
-				if (checkAfterShah(chessmen, cell)) {
-					status.setCommentGame("Ход под шах");
-				} else {
-					move(chessmen, cell);
-					if (checkGameOver(status.whoWalk())) {
-						status.stop();
-					}
-				}
-			} else {
-				status.setCommentGame("Недопустимый ход");
-			}
-		} else {
-			status.setCommentGame("Выберите фигуру");
+		chess.action();
+		if (chess.checkGameOver()) {
+			this.chess.stop();
 		}
-		update();
-	}
-
-	public void move(Chessmen chessmen, Cell cell) {
-		HistoryType history = null;
-		if (checkCastling(chessmen, cell)) {
-			history = new HistoryCastling(chessmen, cell,
-					getRookInCastling(cell), getCellRookCastling(cell));
-		} else if (checkPawnEdge(chessmen, cell)) {
-			Chessmen enemy = chess.getChessmen(cell);
-			if (enemy != null) {
-				history = new HistoryPawnEdgeUponEnemy(chess, chessmen, enemy,
-						cell);
-			} else {
-				history = new HistoryPawnEdge(chess, chessmen, cell);
-			}
-		} else {
-			Chessmen enemy = chess.getChessmen(cell);
-			if (enemy != null) {
-				history = new HistoryMoveUponEnemy(chess, chessmen, enemy, cell);
-			} else {
-				history = new HistoryMove(chessmen, cell);
-			}
-		}
-		status.move(history);
-	}
-
-	private boolean checkPawnEdge(Chessmen chessmen, Cell cell) {
-		return (chessmen.isWho() == TypeChessmen.Pawn && (cell.getY() == 7 || cell
-				.getY() == 0));
-	}
-
-	private boolean checkGameOver(ColorChessmen color) {
-		boolean gameOver = false;
-		if (checkShah(color)) {
-			if (checkMat(color)) {
-				gameOver = true;
-			}
-		} else if (checkPad(color)) {
-			gameOver = true;
-		}
-		return gameOver;
-	}
-
-	private boolean checkPad(ColorChessmen color) {
-		boolean checkpad = false;
-		if (chess.checkPad(color)) {
-			status.setCommentGame("Пад");
-			checkpad = true;
-		}
-		return checkpad;
-	}
-
-	private boolean checkMat(ColorChessmen color) {
-		boolean checkmat = false;
-		if (!chess.checkKingPath(color)
-				&& !chess.checkKill(chess.getChessmenDanger(color))
-				&& !chess.checkCover(chess.getChessmenDanger(color))) {
-			status.setCommentGame("Шах и Мат");
-			checkmat = true;
-		}
-		return checkmat;
-	}
-
-	private boolean checkShah(ColorChessmen color) {
-		Chessmen chessmenDanger = chess.getChessmenDanger(color);
-		if (chessmenDanger != null) {
-			status.setChessmenDanger(chessmenDanger);
-			status.setCommentGame("Шах");
-			return true;
-		}
-		return false;
-	}
-
-	private boolean checkAfterShah(Chessmen chessmen, Cell cell) {
-		boolean shah = false;
-
-		if (checkCastling(chessmen, cell)) {
-			if (checkShah(status.whoWalk())) {
-				shah = true;
-			}
-		}
-
-		Cell originalCell = chessmen.getCell();
-
-		Chessmen enemy = chess.getChessmen(cell);
-		chess.removeChessmen(enemy);
-
-		chessmen.move(cell);
-
-		Chessmen chessmenDanger = chess.getChessmenDanger(status.whoWalk());
-
-		chessmen.unmove(originalCell);
-		if (enemy != null) {
-			chess.addChessmen(enemy);
-		}
-
-		if (chessmenDanger != null) {
-			status.setChessmenDanger(chessmenDanger);
-			status.setCommentGame("Недопустимый ход");
-			shah = true;
-		}
-		return shah;
-	}
-
-	public boolean checkGameOver() {
-		return false;
-	}
-
-	public void update() {
-		frameMain.update();
+		updateStatus();
 		frameMain.repaint();
 	}
 
 	public Cell getCellActive() {
-		return status.getCellActive();
+		return chess.getCellActive();
 	}
 
-	public void setCellActive(int x, int y) {
-		status.setCellActive(new Cell(x, y));
+	public void setCellActive(Cell cell) {
+		chess.setCellActive(cell);
 		frameMain.repaint();
 	}
 
 	public Chessmen getCellDanger() {
-		return status.getCellDanger();
+		return chess.getCellDanger();
 	}
 
 	public void setCellDanger(Chessmen chessmen) {
-		status.setChessmenDanger(chessmen);
+		chess.setChessmenDanger(chessmen);
 		frameMain.repaint();
 	}
 
 	public Chessmen getChessmenActive() {
-		return status.getChessmenActive();
+		return chess.getChessmenActive();
 	}
 
-	public void setChessmenActive() {
-		status.setChessmenActive(chess.getChessmen(status.getCellActive()));
+	public ColorChessmen getWhoWalk() {
+		return chess.whoWalk();
 	}
 
-	public ColorChessmen getStatus() {
-		return status.whoWalk();
+	public Status getStatus() {
+		return chess.getStatus();
 	}
 
-	public List<Chessmen> getChessmens() {
+	public Chessmens getChessmens() {
 		return chess.getChessmens();
 	}
 
 	public boolean checkFriendChessmen(Cell cell) {
-		Chessmen chessmen = chess.getChessmen(cell);
-		if (chessmen != null) {
-			if (chessmen.getColor() == status.whoWalk()) {
-				return true;
-			}
-		}
-		return false;
+		return chess.checkFriendChessmen(cell);
 	}
 
-	public boolean checkEnemyChessmen() {
-		Chessmen chessmen = chess.getChessmen(status.getCellActive());
-		if (chessmen != null) {
-			if (chessmen.getColor() != status.whoWalk()) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public boolean checkMove(Chessmen chessmen, Cell cell) {
-		boolean move = false;
-		if (checkCastling(chessmen, cell)) {
-			move = true;
-		} else if (chessmen.checkMove(cell, chess.getChessStatus())) {
-			move = true;
-		}
-		return move;
-	}
-
-	private boolean checkCastling(Chessmen chessmen, Cell cell) {
-		boolean castling = false;
-		if (chessmen.isWho() == TypeChessmen.King
-				&& chessmen.getCountMove() == 0
-				&& chessmen.getY() == cell.getY()
-				&& (chessmen.getX() == cell.getX() - 2 || chessmen.getX() == cell
-						.getX() + 2) && checkMoveCastling(cell)) {
-			castling = true;
-		}
-		return castling;
-	}
-
-	private boolean checkMoveCastling(Cell cell) {
-		boolean castling = false;
-		Chessmen rook = getRookInCastling(cell);
-		Cell cellRook = getCellRookCastling(cell);
-		if (rook != null) {
-			if (rook.getCountMove() == 0
-					&& rook.checkMove(cellRook, chess.getChessStatus())) {
-				castling = true;
-			}
-		}
-		return castling;
-	}
-
-	private Chessmen getRookInCastling(Cell cell) {
-		Chessmen rook = null;
-		if (status.whoWalk() == ColorChessmen.white) {
-			if (cell.getX() < 4) {
-				rook = chess.getChessmen(new Cell(0, 7));
-			} else {
-				rook = chess.getChessmen(new Cell(7, 7));
-			}
-		} else {
-			if (cell.getX() < 4) {
-				rook = chess.getChessmen(new Cell(0, 0));
-			} else {
-				rook = chess.getChessmen(new Cell(7, 0));
-			}
-		}
-		return rook;
-	}
-
-	private Cell getCellRookCastling(Cell cell) {
-		Cell cellRook = null;
-		if (status.whoWalk() == ColorChessmen.white) {
-			if (cell.getX() < 4) {
-				cellRook = new Cell(3, 7);
-			} else {
-				cellRook = new Cell(5, 7);
-			}
-		} else {
-			if (cell.getX() < 4) {
-				cellRook = new Cell(3, 0);
-			} else {
-				cellRook = new Cell(5, 0);
-			}
-		}
-		return cellRook;
-	}
-
-	public void setChessmenDanger(Chessmen chessmen) {
-		status.setChessmenDanger(chessmen);
-	}
-
-	public void undoHistory() {
-		if (status.undoHistory()) {
-			status.switchWalk();
-			checkGameOver(status.whoWalk());
-			update();
-		}
-	}
-
-	public void redoHistory() {
-		if (status.redoHistory()) {
-			status.switchWalk();
-			checkGameOver(status.whoWalk());
-			update();
-		}
-	}
-
-	public List<Cell> getAvailablePathsAtActiveChessmen() {
-		List<Cell> availablePaths = null;
-		Chessmen chessmen = status.getChessmenActive();
-		if (chessmen != null) {
-			availablePaths = chessmen.getAvailablePaths(chess.getChessStatus());
-		}
-		return availablePaths;
-	}
-
-	public Cell getDangerCell() {
-		Cell cell = null;
-		if (status.getCellDanger() != null) {
-			cell = chess.getKing(status.whoWalk()).getCell();
-		}
-		return cell;
+	public boolean checkEnemyChessmen(Cell cell) {
+		return chess.checkEnemyChessmen(cell);
 	}
 
 	public Chessmen getChessmen(Cell cell) {
 		return chess.getChessmen(cell);
 	}
+
+	public void setChessmenDanger(Chessmen chessmen) {
+		chess.setChessmenDanger(chessmen);
+	}
+
+	public void switchModeRead() {
+		chess.switchModeRead();
+		frameMain.repaint();
+	}
+
+	public void updateStatus() {
+		frameMain.updateStatus();
+	}
+
+	public void createMultiplayer() throws IOException {
+		Server.runServer();
+	}
+
+	public void connectMultiplayer() {
+		client.connect("localhost");
+	}
+
+	public void disconnectMultiplayer() {
+		try {
+			server.stopServer();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		// client = null;
+	}
+
+	public Object loadChess(Object query) {
+		chess = (Chess) query;
+		frameMain.repaint();
+		updateStatus();
+		return null;
+	}
+
+	public Chess getChess() {
+		return this.chess;
+	}
+
+	public void loadGame() throws Exception {
+		JFileChooser fileopen = new JFileChooser();
+		fileopen.setCurrentDirectory(new File(".\\save"));
+		if (fileopen.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+			readXML(fileopen.getSelectedFile().getAbsolutePath());
+			updateStatus();
+		}
+	}
+
+	public void readXML(String pathToFile) {
+		SAXParserFactory factory = SAXParserFactory.newInstance();
+		SAXParser parser;
+
+		try {
+			parser = factory.newSAXParser();
+
+			SAXParserXML saxParser = new SAXParserXML();
+			File file = new File(pathToFile);
+
+			parser.parse(file, saxParser);
+
+			this.chess.load(new Chessmens(saxParser.getChessmens()),
+					new Status(), new History());
+		} catch (ParserConfigurationException | SAXException e1) {
+			e1.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void undoHistory() {
+		chess.undoHistory();
+		updateStatus();
+		frameMain.repaint();
+	}
+
+	public void redoHistory() {
+		chess.redoHistory();
+		updateStatus();
+		frameMain.repaint();
+	}
+
+	public List<Cell> getAvailablePathsAtActiveChessmen() {
+		return chess.getAvailablePathsAtActiveChessmen();
+	}
+
+	public Cell getDangerCell() {
+		return chess.getDangerCell();
+	}
+
+	public boolean isGame() {
+		return chess.isGame();
+	}
+
+	/*
+	 * public void writeIntoXML(String path) throws IOException,
+	 * TransformerException, ParserConfigurationException, SQLException {
+	 * 
+	 * List<List<String>> value = getData();
+	 * 
+	 * if (!path.equals("")) this.pathToFile = path;
+	 * 
+	 * DocumentBuilderFactory f = DocumentBuilderFactory.newInstance();
+	 * DocumentBuilder builder = f.newDocumentBuilder();
+	 * 
+	 * Document doc = (Document) builder.newDocument();
+	 * 
+	 * Element rootDoc = doc.createElement("table"); doc.appendChild(rootDoc);
+	 * 
+	 * Element header = doc.createElement("header");
+	 * rootDoc.appendChild(header);
+	 * 
+	 * Element names = doc.createElement("names"); header.appendChild(names);
+	 * for (int num = 0; num < hullTable.getHeaderNames().size(); num++) {
+	 * Element name = doc.createElement("name");
+	 * name.appendChild(doc.createTextNode(hullTable.getHeaderNames().get(
+	 * num))); names.appendChild(name); } Element unions =
+	 * doc.createElement("unions"); header.appendChild(unions); for (int num =
+	 * 0; num < hullTable.getUnionCells().size(); num++) { Element union =
+	 * doc.createElement("union");
+	 * 
+	 * union.setAttribute("first", String.valueOf((hullTable
+	 * .getUnionCells().get(num).getBeginUnion()))); union.setAttribute("last",
+	 * String.valueOf((hullTable .getUnionCells().get(num).getEndUnion())));
+	 * union.setAttribute("union_name", String.valueOf((hullTable
+	 * .getUnionCells().get(num).getColumnName()))); unions.appendChild(union);
+	 * }
+	 * 
+	 * Element finds = doc.createElement("finds"); rootDoc.appendChild(finds);
+	 * for (int num = 0; num < findArray.size(); num++) { Element find =
+	 * doc.createElement("find"); find.setAttribute("label",
+	 * findArray.get(num).getLabel()); find.setAttribute("type",
+	 * findArray.get(num).getType());
+	 * 
+	 * List<Integer> columnArray = findArray.get(num).getColumns(); for (int
+	 * num2 = 0; num2 < columnArray.size(); num2++) { Element column =
+	 * doc.createElement("column"); column.appendChild(doc.createTextNode(String
+	 * .valueOf(columnArray.get(num2)))); find.appendChild(column); }
+	 * finds.appendChild(find); }
+	 * 
+	 * Element dataEl = doc.createElement("data"); rootDoc.appendChild(dataEl);
+	 * for (int num = 0; num < value.size(); num++) { Element node =
+	 * doc.createElement("node"); dataEl.appendChild(node);
+	 * 
+	 * for (int num2 = 0; num2 < value.get(num).size(); num2++) { Element info =
+	 * doc.createElement("info"); node.appendChild(info);
+	 * info.appendChild(doc.createTextNode(value.get(num).get(num2))); } }
+	 * Transformer t = TransformerFactory.newInstance().newTransformer();
+	 * t.transform(new DOMSource(doc), new StreamResult(new FileOutputStream(
+	 * pathToFile))); }
+	 */
 }

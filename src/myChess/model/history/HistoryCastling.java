@@ -1,9 +1,12 @@
-package myChess.controller.history;
+package myChess.model.history;
+
+import java.io.Serializable;
 
 import myChess.model.chessmens.Chessmen;
 import myChess.types.Cell;
 
-public class HistoryCastling extends HistoryType {
+public class HistoryCastling extends HistoryType implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private Cell cellBeginKing;
 	private Cell cellEndKing;
 	private Cell cellBeginRook;
@@ -45,7 +48,7 @@ public class HistoryCastling extends HistoryType {
 	}
 
 	@Override
-	public void redo() {
+	public void execute() {
 		king.move(cellEndKing);
 		rook.move(cellEndRook);
 	}

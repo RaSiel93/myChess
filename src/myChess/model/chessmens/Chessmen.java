@@ -1,5 +1,6 @@
 package myChess.model.chessmens;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,15 +8,16 @@ import myChess.types.Cell;
 import myChess.types.TypeChessmen;
 import myChess.types.ColorChessmen;
 
-public abstract class Chessmen {
+public abstract class Chessmen implements Serializable{
+	private static final long serialVersionUID = 1L;
 	protected Cell cell;
 	protected ColorChessmen color;
 	protected int countMove;
 	
-	public Chessmen(Cell cell, ColorChessmen color) {
+	public Chessmen(Cell cell, ColorChessmen color, int countMove) {
 		this.cell = cell;
 		this.color = color;
-		this.countMove = 0;
+		this.countMove = countMove;
 	}
 
 	public int getCountMove(){

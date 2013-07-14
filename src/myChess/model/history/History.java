@@ -1,17 +1,21 @@
-package myChess.controller;
+package myChess.model.history;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-import myChess.controller.history.HistoryType;
 
-public class History {
-
+public class History implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private ListIterator<HistoryType> iterHistory;
 	private List<HistoryType> listHistory;
 	private HistoryType currentHistory;
-
+	
+	public List<HistoryType> getListIter(){
+		return listHistory;
+	}
+	
 	public History() {
 		this.listHistory = new ArrayList<HistoryType>();
 		this.iterHistory = this.listHistory.listIterator();
@@ -25,7 +29,7 @@ public class History {
 	public String getCommentHistory() {
 		return this.currentHistory.getCommentHistory();
 	}
-	
+
 	public void addHistory(HistoryType history) {
 		removeOldHistory();
 		this.currentHistory = history;
@@ -40,8 +44,8 @@ public class History {
 			this.iterHistory.remove();
 		}
 	}
-	
-	private void iterToLast(){
+
+	private void iterToLast() {
 		while (this.iterHistory.hasNext()) {
 			this.iterHistory.next();
 		}
@@ -49,7 +53,7 @@ public class History {
 
 	public boolean undo() {
 		boolean undo = false;
-		if(this.iterHistory.hasPrevious()) {
+		if (this.iterHistory.hasPrevious()) {
 			this.currentHistory = iterHistory.previous();
 			this.currentHistory.undo();
 			undo = true;
@@ -59,9 +63,9 @@ public class History {
 
 	public boolean redo() {
 		boolean redo = false;
-		if(this.iterHistory.hasNext()) {
+		if (this.iterHistory.hasNext()) {
 			this.currentHistory = iterHistory.next();
-			this.currentHistory.redo();
+			this.currentHistory.execute();
 			redo = true;
 		}
 		return redo;

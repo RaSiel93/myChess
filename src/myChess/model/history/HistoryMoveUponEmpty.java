@@ -1,24 +1,21 @@
-package myChess.controller.history;
+package myChess.model.history;
+
+import java.io.Serializable;
 
 import myChess.model.chessmens.Chessmen;
 import myChess.types.Cell;
-import myChess.model.Chess;
 
-public class HistoryMoveUponEnemy extends HistoryType {
-	private Chess chess;
+public class HistoryMoveUponEmpty extends HistoryType  implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private Cell cellBegin;
 	private Cell cellEnd;
 	private Chessmen chessmen;
-	private Chessmen enemy;
 
-	public HistoryMoveUponEnemy(Chess chess, Chessmen chessmen, Chessmen enemy,
-			Cell cellEnd) {
-		this.chess = chess;
+	public HistoryMoveUponEmpty(Chessmen chessmen, Cell cellEnd) {
 		this.cellBegin = chessmen.getCell();
 		this.cellEnd = cellEnd;
 		this.chessmen = chessmen;
-		this.enemy = enemy;
-		this.comment = "—бита фигура";
+		this.comment = "’од";
 	}
 
 	public String getCommentHistory() {
@@ -32,11 +29,10 @@ public class HistoryMoveUponEnemy extends HistoryType {
 	@Override
 	public void undo() {
 		chessmen.unmove(cellBegin);
-		chess.addChessmen(enemy);
 	}
 
 	@Override
-	public void redo() {
+	public void execute() {
 		chessmen.move(cellEnd);
-		chess.removeChessmen(enemy);
-	}}
+	}
+}

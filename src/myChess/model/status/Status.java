@@ -1,33 +1,30 @@
-package myChess.controller;
+package myChess.model.status;
+
+import java.io.Serializable;
 
 import myChess.model.chessmens.Chessmen;
-import myChess.controller.history.HistoryType;
 import myChess.types.Cell;
 import myChess.types.ColorChessmen;
 
-public class Status {
+public class Status implements Serializable {
+	private static final long serialVersionUID = 1L;
+	private boolean modeRead;
 	private boolean game;
 	private ColorChessmen whoWalks;
 
 	private String commentGame;
 	private String commentHistory;
 
-	private History history;
-
 	private Cell cellActive;
 	private Chessmen chessmenActive;
 	private Chessmen chessmenDanger;
 
 	public Status() {
-		reset();
-	}
-
-	public void reset() {
 		this.game = false;
+		this.modeRead = false;
 		this.whoWalks = ColorChessmen.white;
 		this.commentGame = "-";
 		this.commentHistory = "Пустая история";
-		this.history = new History();
 		this.cellActive = null;
 		this.chessmenDanger = null;
 		this.chessmenActive = null;
@@ -35,16 +32,18 @@ public class Status {
 
 	public void start() {
 		this.game = true;
-		setCommentGame("Начало игры");
 	}
 
 	public void stop() {
 		this.game = false;
-		//setCommentGame("Конец игры");
 	}
 
 	public boolean isGame() {
 		return this.game;
+	}
+
+	public boolean isModeRead() {
+		return this.modeRead;
 	}
 
 	public ColorChessmen whoWalk() {
@@ -58,8 +57,10 @@ public class Status {
 		return ColorChessmen.white;
 	}
 
-	public void switchWalk() {
+	public void move() {
 		this.whoWalks = whoNoWalk();
+		this.chessmenDanger = null;
+		this.chessmenActive = null;
 	}
 
 	public Cell getCellActive() {
@@ -104,10 +105,6 @@ public class Status {
 		return this.commentGame;
 	}
 
-	public void updateCommentGame() {
-		setCommentGame(this.history.getCommentGame());
-	}
-
 	public void setCommentHistory(String string) {
 		this.commentHistory = string;
 	}
@@ -116,45 +113,8 @@ public class Status {
 		return this.commentHistory;
 	}
 
-	public void updateCommentHistory() {
-		setCommentHistory(this.history.getCommentHistory());
-	}
-
-	public void addHistory(HistoryType history) {
-		this.history.addHistory(history);
-	}
-
-	void update() {
-		setChessmenActive(null);
-		setChessmenDanger(null);
-		updateCommentGame();
-		updateCommentHistory();
-	}
-	
-	public boolean undoHistory() {
-		boolean undo = false;
-		if (this.history.undo()) {
-			update();
-			undo = true;
-		}
-		return undo;
-	}
-
-	public boolean redoHistory() {
-		boolean redo = false;
-		if (this.history.redo()) {
-			update();
-			redo = true;
-		}
-		return redo;
-	}
-
-	public void move(HistoryType history) {
-		history.redo();
-		switchWalk();
-		addHistory(history);
-		update();
-		setChessmenActive(null);
-		setChessmenDanger(null);
+	public void switchModeRead() {
+		this.modeRead = !modeRead;
+		this.chessmenActive = null;
 	}
 }

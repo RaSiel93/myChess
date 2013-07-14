@@ -35,6 +35,10 @@ public class PanelMenu extends JMenuBar {
 		newGame.addActionListener(new NewGame());
 		newGame.setAccelerator(KeyStroke.getKeyStroke('N', CTRL_DOWN_MASK));
 
+		JMenuItem loadGame = new JMenuItem("Загрузить игру");
+		loadGame.addActionListener(new LoadGame());
+		loadGame.setAccelerator(KeyStroke.getKeyStroke('L', CTRL_DOWN_MASK));
+		
 		JMenuItem undo = new JMenuItem("Отменить ход");
 		undo.addActionListener(new Undo());
 		undo.setAccelerator(KeyStroke.getKeyStroke('Z', CTRL_DOWN_MASK));
@@ -48,11 +52,30 @@ public class PanelMenu extends JMenuBar {
 		exit.setAccelerator(KeyStroke.getKeyStroke('Q', CTRL_DOWN_MASK));
 
 		game.add(newGame);
+		game.add(loadGame);
 		game.add(undo);
 		game.add(redo);
 		game.add(exit);
 
 		add(game);
+		// ---------------------------------
+
+		JMenu multiplayer = new JMenu("Сетевая игра");
+
+		JMenuItem createMultiplayer = new JMenuItem("Создать игру");
+		createMultiplayer.addActionListener(new CreateMultiplayer());
+
+		JMenuItem connectMultiplayer = new JMenuItem("Подключиться к игре");
+		connectMultiplayer.addActionListener(new ConnectMultiplayer());
+
+		JMenuItem disconnectMultiplayer = new JMenuItem("Отключиться от игры");
+		disconnectMultiplayer.addActionListener(new DisconnectMultiplayer());
+
+		multiplayer.add(createMultiplayer);
+		multiplayer.add(connectMultiplayer);
+		multiplayer.add(disconnectMultiplayer);
+
+		add(multiplayer);
 		// ---------------------------------
 
 		JMenu option = new JMenu("Настройки");
@@ -74,6 +97,16 @@ public class PanelMenu extends JMenuBar {
 		backlight.addActionListener(new Backlight());
 		backlight.setMnemonic(KeyEvent.VK_L);
 
+		JCheckBox reversChess = new JCheckBox("Развернуть доску");
+		reversChess.setSelected(false);
+		reversChess.addActionListener(new ReversChess());
+		reversChess.setMnemonic(KeyEvent.VK_R);
+
+		JCheckBox modeRead = new JCheckBox("Режим просмотра");
+		modeRead.setSelected(false);
+		modeRead.addActionListener(new ModeRead());
+		modeRead.setMnemonic(KeyEvent.VK_M);
+
 		ButtonGroup group = new ButtonGroup();
 		group.add(styleClassic);
 		group.add(styleBrown);
@@ -83,6 +116,8 @@ public class PanelMenu extends JMenuBar {
 		colors.add(styleBrown);
 
 		option.add(backlight);
+		option.add(reversChess);
+		option.add(modeRead);
 
 		add(option);
 		// ----------------------------------
@@ -107,6 +142,17 @@ public class PanelMenu extends JMenuBar {
 		}
 	}
 
+	private class LoadGame implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			try {
+				controller.loadGame();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		}
+	}
+	
 	private class Undo implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -128,6 +174,31 @@ public class PanelMenu extends JMenuBar {
 		}
 	}
 
+	private class CreateMultiplayer implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			try {
+				controller.createMultiplayer();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+	}
+
+	private class ConnectMultiplayer implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			controller.connectMultiplayer();
+		}
+	}
+
+	private class DisconnectMultiplayer implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			controller.disconnectMultiplayer();
+		}
+	}
+	
 	private class SwitchStyleChessboard implements ActionListener {
 		private StyleChessboard color;
 
@@ -145,6 +216,20 @@ public class PanelMenu extends JMenuBar {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			frameMain.switchBacklight();
+		}
+	}
+
+	private class ReversChess implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			frameMain.reversChess();
+		}
+	}
+
+	private class ModeRead implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			controller.switchModeRead();
 		}
 	}
 

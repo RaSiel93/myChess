@@ -26,7 +26,7 @@ public class ListenerClick implements MouseListener {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		if (controller.isGame()) {
+		if (!controller.isGame()||!controller.isModeRead()) {
 			controller.action();
 		}
 	}

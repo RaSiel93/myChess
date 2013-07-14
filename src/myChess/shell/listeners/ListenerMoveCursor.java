@@ -5,6 +5,7 @@ import java.awt.event.MouseMotionListener;
 
 import myChess.controller.Controller;
 import myChess.shell.FrameMain;
+import myChess.types.Cell;
 
 public class ListenerMoveCursor implements MouseMotionListener {
 
@@ -16,14 +17,15 @@ public class ListenerMoveCursor implements MouseMotionListener {
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		controller.setCellActive(e.getX() / FrameMain.sizeCell, e.getY()
-				/ FrameMain.sizeCell);
+			controller.setCellActive(new Cell(FrameMain.getCoord(e.getX()
+					/ FrameMain.sizeCell), FrameMain.getCoord(e.getY()
+					/ FrameMain.sizeCell)));
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		controller.setCellActive(e.getX() / FrameMain.sizeCell, e.getY()
-				/ FrameMain.sizeCell);
+			controller.setCellActive(new Cell(FrameMain.getCoord(e.getX()
+					/ FrameMain.sizeCell), FrameMain.getCoord(e.getY()
+					/ FrameMain.sizeCell)));
 	}
-
 }

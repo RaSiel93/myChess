@@ -34,11 +34,11 @@ public class PanelChessView extends JPanel {
 		setPreferredSize(new Dimension(600, 600));
 	}
 
-	public void switchBackLight(){
+	public void switchBackLight() {
 		this.backlight = !this.backlight;
 		updateUI();
 	}
-	
+
 	public void switchStyleChessboard(StyleChessboard color) {
 		switch (color) {
 		case Classic:
@@ -81,24 +81,25 @@ public class PanelChessView extends JPanel {
 		printChessboard(g2);
 		if (this.backlight) {
 			printAvailablePaths(g2);
-			printDangerChessmen(g2);
-			printDangerPaths(g2);
 		}
+		printDangerChessmen(g2);
+		printDangerPaths(g2);
 		printActiveCell(g2);
 		printActiveChessmen(g2);
 		printChessmens(g2);
 	}
 
 	private Double getCellSquare(Cell cell) {
-		return new Rectangle2D.Double(cell.getX() * FrameMain.sizeCell,
-				cell.getY() * FrameMain.sizeCell, FrameMain.sizeCell,
-				FrameMain.sizeCell);
+		return new Rectangle2D.Double(FrameMain.getCoord(cell.getX())
+				* FrameMain.sizeCell, FrameMain.getCoord(cell.getY())
+				* FrameMain.sizeCell, FrameMain.sizeCell, FrameMain.sizeCell);
 	}
 
 	private Double getSmallSquare(Cell cell) {
-		return new Rectangle2D.Double(cell.getX() * FrameMain.sizeCell
-				+ FrameMain.sizeCell * 0.05, cell.getY() * FrameMain.sizeCell
-				+ FrameMain.sizeCell * 0.05, FrameMain.sizeCell * 0.9,
+		return new Rectangle2D.Double(FrameMain.getCoord(cell.getX())
+				* FrameMain.sizeCell + FrameMain.sizeCell * 0.05,
+				FrameMain.getCoord(cell.getY()) * FrameMain.sizeCell + FrameMain.sizeCell
+						* 0.05, FrameMain.sizeCell * 0.9,
 				FrameMain.sizeCell * 0.9);
 	}
 
@@ -167,7 +168,7 @@ public class PanelChessView extends JPanel {
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
 
-		for (Chessmen chessmen : controller.getChessmens()) {
+		for (Chessmen chessmen : controller.getChessmens().getChessmens()) {
 			Image image = null;
 			switch (chessmen.isWho()) {
 			case Pawn:
@@ -190,9 +191,9 @@ public class PanelChessView extends JPanel {
 				break;
 			}
 
-			g2.drawImage(image, chessmen.getX() * FrameMain.sizeCell,
-					chessmen.getY() * FrameMain.sizeCell, FrameMain.sizeCell,
-					FrameMain.sizeCell, this);
+			g2.drawImage(image, FrameMain.getCoord(chessmen.getX()) * FrameMain.sizeCell,
+					FrameMain.getCoord(chessmen.getY()) * FrameMain.sizeCell,
+					FrameMain.sizeCell, FrameMain.sizeCell, this);
 		}
 	}
 
@@ -201,7 +202,8 @@ public class PanelChessView extends JPanel {
 			return Toolkit.getDefaultToolkit().getImage(
 					PanelChessView.class.getResource("chessmens/PB.png"));
 		}
-		return Toolkit.getDefaultToolkit().getImage(PanelChessView.class.getResource("chessmens/PW.png"));
+		return Toolkit.getDefaultToolkit().getImage(
+				PanelChessView.class.getResource("chessmens/PW.png"));
 	}
 
 	private Image drawRook(Chessmen chessmen) {
@@ -209,7 +211,8 @@ public class PanelChessView extends JPanel {
 			return Toolkit.getDefaultToolkit().getImage(
 					PanelChessView.class.getResource("chessmens/RB.png"));
 		}
-		return Toolkit.getDefaultToolkit().getImage(PanelChessView.class.getResource("chessmens/RW.png"));
+		return Toolkit.getDefaultToolkit().getImage(
+				PanelChessView.class.getResource("chessmens/RW.png"));
 	}
 
 	private Image drawHorse(Chessmen chessmen) {
@@ -217,7 +220,8 @@ public class PanelChessView extends JPanel {
 			return Toolkit.getDefaultToolkit().getImage(
 					PanelChessView.class.getResource("chessmens/HB.png"));
 		}
-		return Toolkit.getDefaultToolkit().getImage(PanelChessView.class.getResource("chessmens/HW.png"));
+		return Toolkit.getDefaultToolkit().getImage(
+				PanelChessView.class.getResource("chessmens/HW.png"));
 	}
 
 	private Image drawOfficer(Chessmen chessmen) {
@@ -225,7 +229,8 @@ public class PanelChessView extends JPanel {
 			return Toolkit.getDefaultToolkit().getImage(
 					PanelChessView.class.getResource("chessmens/OB.png"));
 		}
-		return Toolkit.getDefaultToolkit().getImage(PanelChessView.class.getResource("chessmens/OW.png"));
+		return Toolkit.getDefaultToolkit().getImage(
+				PanelChessView.class.getResource("chessmens/OW.png"));
 	}
 
 	private Image drawQueen(Chessmen chessmen) {
@@ -233,7 +238,8 @@ public class PanelChessView extends JPanel {
 			return Toolkit.getDefaultToolkit().getImage(
 					PanelChessView.class.getResource("chessmens/QB.png"));
 		}
-		return Toolkit.getDefaultToolkit().getImage(PanelChessView.class.getResource("chessmens/QW.png"));
+		return Toolkit.getDefaultToolkit().getImage(
+				PanelChessView.class.getResource("chessmens/QW.png"));
 	}
 
 	private Image drawKing(Chessmen chessmen) {
@@ -241,6 +247,7 @@ public class PanelChessView extends JPanel {
 			return Toolkit.getDefaultToolkit().getImage(
 					PanelChessView.class.getResource("chessmens/KB.png"));
 		}
-		return Toolkit.getDefaultToolkit().getImage(PanelChessView.class.getResource("chessmens/KW.png"));
+		return Toolkit.getDefaultToolkit().getImage(
+				PanelChessView.class.getResource("chessmens/KW.png"));
 	}
 }

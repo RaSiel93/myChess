@@ -8,8 +8,9 @@ import myChess.types.TypeChessmen;
 import myChess.types.ColorChessmen;
 
 public class Rook extends Chessmen {
-	public Rook(Cell cell, ColorChessmen color) {
-		super(cell, color);
+	private static final long serialVersionUID = 1L;
+	public Rook(Cell cell, ColorChessmen color, int countMove) {
+		super(cell, color, countMove);
 	}
 
 	@Override

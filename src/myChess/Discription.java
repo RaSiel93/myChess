@@ -5,8 +5,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class Discription {
-	public static String version = "0.9.0";
+	public static String version = "0.9.2";
 	public static String discription = "myChess v." + version
+			+ "\nВерсия 0.9.2:" + "\n\t- переработана структура"
+			+ "\n\t- начата работа над сетевым режимом"
 			+ "\nВерсия 0.9.0:" + "\n\t- добавлено условие пада"
 			+ "\nВерсия 0.8.5:" + "\n\t- добавлена подсветка возможных путей"
 			+ "\nВерсия 0.8.4:" + "\n\t- добавлено перечисление цветов фигур"
